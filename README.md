@@ -51,11 +51,3 @@
 ./gradlew :26.3:assemble
 ```
 Собранный JAR-файл появится в папке `versions/26.3/build/libs/`.
-
----
-
-## 👥 Авторы и контрибьюторы / Credits
-* **[Ryan100C / hotpad100c](https://github.com/hotpad100c)** — автор оригинального мода Lucidity.
-* **[useexpo](https://github.com/useexpo)** — мейнтейнер форка и адаптации под версию 26.3.
-* **Antigravity** (Google DeepMind) — помощь в отладке крашей миксинов, адаптации дескрипторов под 26.3 и конфигурации Stonecutter.
-
