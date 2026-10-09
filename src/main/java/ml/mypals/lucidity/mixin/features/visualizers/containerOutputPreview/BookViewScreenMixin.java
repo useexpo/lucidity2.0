@@ -1,10 +1,11 @@
 package ml.mypals.lucidity.mixin.features.visualizers.containerOutputPreview;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.network.chat.Component;
@@ -35,7 +36,7 @@ public abstract class BookViewScreenMixin extends Screen {
 
     @Unique
 
-    private int renderComparatorOutput(GuiGraphics context, Font font, Component component, int i, int j, int k, boolean bl){
+    private int renderComparatorOutput(GuiGraphicsExtractor context, Font font, Component component, int i, int j, int k, boolean bl){
 
         int currentPage = this.currentPage;
         int pageCount = this.getNumPages();
@@ -48,13 +49,13 @@ public abstract class BookViewScreenMixin extends Screen {
         context.drawString(font, outputText, width - length + 192 - 44, j, k, bl);
         return 1;
         //?} else {
-        /*return context.drawString(font, outputText, width - length + 192 - 44, j, k, bl);
-        *///?}
+        /^return context.drawString(font, outputText, width - length + 192 - 44, j, k, bl);
+        ^///?}
     }
 
     //? if >=1.21.6 {
     @WrapOperation(method = "render",at = @At(target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V",value = "INVOKE"))
-    private void render(GuiGraphics instance, Font font, Component component, int i, int j, int k, boolean bl, Operation<Void> original) {
+    private void render(GuiGraphicsExtractor instance, Font font, Component component, int i, int j, int k, boolean bl, Operation<Void> original) {
         if (!CONTAINER_SIGNAL_PREVIEW.getBooleanValue()) {
             original.call(instance, font, component, i, j, k, bl);
         }else {
@@ -62,14 +63,22 @@ public abstract class BookViewScreenMixin extends Screen {
         }
     }
     //?} else {
-    /*@WrapOperation(method = "render",at = @At(target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",value = "INVOKE"))
-    private int render(GuiGraphics instance, Font font, Component component, int i, int j, int k, boolean bl, Operation<Integer> original) {
+    /^@WrapOperation(method = "render",at = @At(target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",value = "INVOKE"))
+    private int render(GuiGraphicsExtractor instance, Font font, Component component, int i, int j, int k, boolean bl, Operation<Integer> original) {
         if (!CONTAINER_SIGNAL_PREVIEW.getBooleanValue()) {
             return original.call(instance, font, component, i, j, k, bl);
         }else {
             return renderComparatorOutput(instance,font, component,i, j,k,bl);
         }
     }
-    *///?}
+    ^///?}
 
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class BookViewScreenMixin {
+}
+//?}

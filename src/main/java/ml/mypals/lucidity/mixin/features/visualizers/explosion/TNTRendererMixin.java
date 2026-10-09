@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 //? if >=1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 //?} else {
 /*import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -36,7 +36,7 @@ public abstract class TNTRendererMixin extends EntityRenderer<PrimedTnt, TntRend
         super(context);
     }
     //? if >=1.21.9 {
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/TntRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/TntRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
             at = @At("TAIL")
     )
     public void render(TntRenderState tntRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
@@ -62,9 +62,11 @@ public abstract class TNTRendererMixin extends EntityRenderer<PrimedTnt, TntRend
             poseStack.pushPose();
 
             poseStack.translate(0, 1.1f, 0);
-            //? if >=1.21.9 {
-            poseStack.mulPose(cameraRenderState.orientation);
-            //?} else {
+            //? if >=26.1 {
+            poseStack.rotate(cameraRenderState.orientation);
+            //?} else if >=1.21.9 {
+            /*poseStack.mulPose(cameraRenderState.orientation);
+            *///?} else {
             /*poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
             *///?}
             poseStack.scale(0.025F, -0.025F, 0.025F);
@@ -79,9 +81,11 @@ public abstract class TNTRendererMixin extends EntityRenderer<PrimedTnt, TntRend
             Component component = Component.literal(""+rounded).withStyle(time<=20?ChatFormatting.RED:ChatFormatting.WHITE);
             float f = (float)(-font.width(component)) / 2.0F;
             int k = (int)(Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
-            //? if >=1.21.9 {
-            submitNodeCollector.submitNameTag(poseStack, new Vec3(0,1.1,0), 0, component, !tntRenderState.isDiscrete, tntRenderState.lightCoords, tntRenderState.distanceToCameraSq, cameraRenderState);
-            //?} else {
+            //? if >=26.1 {
+            submitNodeCollector.submitNameTag(poseStack, new Vec3(0,1.1,0), 0, component, !tntRenderState.isDiscrete, tntRenderState.lightCoords, cameraRenderState);
+            //?} else if >=1.21.9 {
+            /*submitNodeCollector.submitNameTag(poseStack, new Vec3(0,1.1,0), 0, component, !tntRenderState.isDiscrete, tntRenderState.lightCoords, tntRenderState.distanceToCameraSq, cameraRenderState);
+            *///?} else {
             /*font.drawInBatch(component, f, (float)0, -2130706433, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, k, i);
             font.drawInBatch(component, f, (float)0, -1, false, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, LightTexture./^? if >=1.21.3 {^/lightCoordsWithEmission(i, 2)/^?} else {^//^block(i)^//^?}^/);
             *///?}

@@ -1,0 +1,15 @@
+accessWidener v2 named
+accessible field net/minecraft/world/entity/boss/enderdragon/phases/DragonHoldingPatternPhase currentPath Lnet/minecraft/world/level/pathfinder/Path;
+accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
+accessible field net/minecraft/client/multiplayer/ClientChunkCache storage Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;
+accessible field net/minecraft/client/multiplayer/ClientChunkCache$Storage chunks Ljava/util/concurrent/atomic/AtomicReferenceArray;
+accessible field net/minecraft/world/entity/projectile/hurtingprojectile/windcharge/WindCharge EXPLOSION_DAMAGE_CALCULATOR Lnet/minecraft/world/level/ExplosionDamageCalculator;
+accessible field net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball explosionPower I
+accessible field net/minecraft/world/entity/item/PrimedTnt explosionPower F
+accessible field net/minecraft/world/entity/monster/Creeper explosionRadius I
+accessible method net/minecraft/world/level/block/RespawnAnchorBlock isWaterThatWouldFlow (Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Level;)Z
+
+accessible method net/minecraft/client/renderer/rendertype/RenderType <init> (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)V
+accessible field net/minecraft/client/renderer/rendertype/RenderType state Lnet/minecraft/client/renderer/rendertype/RenderSetup;
+accessible field net/minecraft/client/renderer/rendertype/RenderType name Ljava/lang/String;
+accessible field net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState blockState Lnet/minecraft/world/level/block/state/BlockState;

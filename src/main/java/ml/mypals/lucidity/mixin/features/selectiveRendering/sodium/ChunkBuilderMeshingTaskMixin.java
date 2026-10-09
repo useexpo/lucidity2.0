@@ -1,7 +1,7 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.sodium;
 
-
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
@@ -15,10 +15,10 @@ import net.caffeinemc.mods.sodium.client.render.chunk.translucent_sorting.Transl
 import net.caffeinemc.mods.sodium.client.world.LevelSlice;
 import net.minecraft.client.renderer.chunk.VisGraph;
 //? if >=1.21.5 {
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?} else {
-/*import net.minecraft.client.resources.model.BakedModel;
- *///?}
+/^import net.minecraft.client.resources.model.BakedModel;
+ ^///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +61,7 @@ public abstract class ChunkBuilderMeshingTaskMixin{
         }
     }
     //?} else {
-    /*@WrapOperation(
+    /^@WrapOperation(
             method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;Lnet/caffeinemc/mods/sodium/client/util/task/CancellationToken;)Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildOutput;",
             at = @At(
                     value = "INVOKE",
@@ -74,7 +74,7 @@ public abstract class ChunkBuilderMeshingTaskMixin{
             original.call(instance, type, blockState, model, state);
         }
     }
-    *///?}
+    ^///?}
 
     @WrapOperation(
             method = "execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;" +
@@ -105,3 +105,11 @@ public abstract class ChunkBuilderMeshingTaskMixin{
         }
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public abstract class ChunkBuilderMeshingTaskMixin {
+}
+//?}

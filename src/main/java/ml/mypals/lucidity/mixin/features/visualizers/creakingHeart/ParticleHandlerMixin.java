@@ -14,7 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,8 +38,8 @@ public class ParticleHandlerMixin {
     @Inject(method = "handleParticleEvent", at = @At(target = "Lnet/minecraft/client/multiplayer/ClientLevel;addParticle(Lnet/minecraft/core/particles/ParticleOptions;ZZDDDDDD)V",value="INVOKE"))
     private void lucidity$onHandleAddParticle(ClientboundLevelParticlesPacket clientboundLevelParticlesPacket, CallbackInfo ci){
         if(CREAKING_HEART_INDICATOR.getBooleanValue() &&
-           clientboundLevelParticlesPacket.getParticle() instanceof TrailParticleOption trailParticleOption &&
-           BuiltInRegistries.PARTICLE_TYPE.getId(clientboundLevelParticlesPacket.getParticle().getType()) == BuiltInRegistries.PARTICLE_TYPE.getId(ParticleTypes.TRAIL)&&
+           clientboundLevelParticlesPacket.particle() instanceof TrailParticleOption trailParticleOption &&
+           BuiltInRegistries.PARTICLE_TYPE.getId(clientboundLevelParticlesPacket.particle().getType()) == BuiltInRegistries.PARTICLE_TYPE.getId(ParticleTypes.TRAIL)&&
            trailParticleOption.color() == 6250335
         )
         {
@@ -47,9 +47,9 @@ public class ParticleHandlerMixin {
             Vec3 targetPos = trailParticleOption.target();
             BlockPos pos = BlockPos.containing(targetPos);
             ShapeManagers.addShape(
-                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "creaking_heart_pos_"+pos.hashCode()),
+                    Identifier.fromNamespaceAndPath(MOD_ID, "creaking_heart_pos_"+pos.hashCode()),
                     ShapeGenerator.generateBoxFace()
-                            .aabb(pos.getCenter().subtract(0.5),pos.getCenter().add(0.5))
+                            .aabb(Vec3.atCenterOf(pos).subtract(0.5),Vec3.atCenterOf(pos).add(0.5))
                             .color(0)
                             .seeThrough(true)
                             .transform(t -> {

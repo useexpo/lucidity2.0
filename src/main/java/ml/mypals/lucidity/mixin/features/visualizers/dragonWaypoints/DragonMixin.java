@@ -7,10 +7,9 @@ import ml.mypals.ryansrenderingkit.shape.Shape;
 import ml.mypals.ryansrenderingkit.shape.box.BoxFaceShape;
 import ml.mypals.ryansrenderingkit.shape.line.StripLineShape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.phases.DragonHoldingPatternPhase;
 import net.minecraft.world.entity.boss.enderdragon.phases.DragonPhaseInstance;
@@ -38,10 +37,6 @@ import static ml.mypals.lucidity.config.FeatureToggle.ENDER_DRAGON_WAYPOINTS_VIS
 @Mixin(EnderDragon.class)
 public abstract class DragonMixin extends Mob implements Enemy {
     @Shadow public abstract EnderDragonPhaseManager getPhaseManager();
-
-    @Shadow @Final private EnderDragonPart tail1;
-    @Shadow @Final private EnderDragonPart tail2;
-    @Shadow @Final private EnderDragonPhaseManager phaseManager;
     private BoxFaceShape curentTarget;
     private StripLineShape pathIndicator;
 
@@ -70,7 +65,7 @@ public abstract class DragonMixin extends Mob implements Enemy {
                                 }
                             })
                             .build(Shape.RenderingType.BATCH);
-                    ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"dragon_"+this.getUUID().toString().toLowerCase()+"_target"),curentTarget);
+                    ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"dragon_"+this.getUUID().toString().toLowerCase()+"_target"),curentTarget);
                 }
                 curentTarget.setWorldPosition(target);
                 Vector3f r = LucidityMiscHelpers.rotate(this.level().getGameTime()).toVector3f();
@@ -98,7 +93,7 @@ public abstract class DragonMixin extends Mob implements Enemy {
                                 }
                             })
                             .build(Shape.RenderingType.BATCH);
-                    ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"dragon_"+this.getUUID().toString().toLowerCase()+"_path"),pathIndicator);
+                    ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"dragon_"+this.getUUID().toString().toLowerCase()+"_path"),pathIndicator);
                 }
                 pathIndicator.setVertexes(points);
                 Color color = path.isDone()?

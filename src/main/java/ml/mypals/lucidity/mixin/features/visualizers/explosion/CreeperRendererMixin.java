@@ -1,12 +1,13 @@
 package ml.mypals.lucidity.mixin.features.visualizers.explosion;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+//? if <26.1 {
+/*import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.model.CreeperModel;
+import net.minecraft.client.model.monster.creeper.CreeperModel;
 //? if >=1.21.9 {
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 //?}
 import net.minecraft.client.renderer.LightTexture;
@@ -36,14 +37,14 @@ import static ml.mypals.lucidity.config.ExplosionVisualizerConfigs.EXPLOSION_TIM
 //? if >=1.21.3 {
 public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperRenderState, CreeperModel> {
 //?} else if >= 1.21.2 {
-/*public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperModel> {
-*/
+/^public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperModel> {
+^/
 //?} else {
-/*public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperModel<Creeper>> {
-*/
+/^public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperModel<Creeper>> {
+^/
 //?}
 
-    public CreeperRendererMixin(EntityRendererProvider.Context context, CreeperModel/*? if <=1.21.1 {*//*<Creeper>*//*?}*/ entityModel, float f) {
+    public CreeperRendererMixin(EntityRendererProvider.Context context, CreeperModel/^? if <=1.21.1 {^//^<Creeper>^//^?}^/ entityModel, float f) {
         super(context, entityModel, f);
     }
     //? if >=1.21.9 {
@@ -51,15 +52,15 @@ public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperR
     public void submit(@NotNull CreeperRenderState creeperRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, @NotNull CameraRenderState cameraRenderState) {
         super.submit(creeperRenderState, poseStack, submitNodeCollector, cameraRenderState);
     //?} else if >=1.21.3 {
-    /*@Override
+    /^@Override
     public void render(@NotNull CreeperRenderState creeperRenderState, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
         super.render(creeperRenderState, poseStack, multiBufferSource, i);
-    *///?} else {
+    ^///?} else {
 
-    /*@Override
+    /^@Override
     public void render(@NotNull Creeper creeperRenderState, float e, float g, @NotNull PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         super.render(creeperRenderState,e,g, poseStack, multiBufferSource, i);
-    *///?}
+    ^///?}
         if (EXPLOSION_TIMER.getBooleanValue()) {
             poseStack.pushPose();
 
@@ -67,21 +68,21 @@ public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperR
             //? if >=1.21.3 {
             poseStack.translate(0, creeperRenderState.eyeHeight + (double)0.5F, 0);
             //?} else {
-            /*poseStack.translate(0, creeperRenderState.getEyeHeight() + (double)0.5F, 0);
-            *///?}
+            /^poseStack.translate(0, creeperRenderState.getEyeHeight() + (double)0.5F, 0);
+            ^///?}
 
             //? if >=1.21.9 {
             poseStack.mulPose(cameraRenderState.orientation);
             //?} else {
-            /*poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            *///?}
+            /^poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+            ^///?}
             poseStack.scale(0.025F, -0.025F, 0.025F);
 
             //? if >=1.21.3 {
             float time = 1 - creeperRenderState.swelling;
             //?} else {
-            /*float time = 1 - creeperRenderState.swell;
-            *///?}
+            /^float time = 1 - creeperRenderState.swell;
+            ^///?}
             float rounded = Math.round(time * 10f) / 10f;
             if(rounded < 0.99) {
                 Matrix4f matrix4f = poseStack.last().pose();
@@ -93,11 +94,18 @@ public abstract class CreeperRendererMixin extends MobRenderer<Creeper, CreeperR
                 //? if >=1.21.9 {
                 submitNodeCollector.submitNameTag(poseStack, new Vec3(0,creeperRenderState.eyeHeight+0.5,0), 0, component, !creeperRenderState.isDiscrete, creeperRenderState.lightCoords, creeperRenderState.distanceToCameraSq, cameraRenderState);
                 //?} else {
-                /*font.drawInBatch(component, f, (float) 0, -2130706433, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, k, i);
-                font.drawInBatch(component, f, (float) 0, -1, false, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, LightTexture./^? if >=1.21.3 {^/lightCoordsWithEmission(i, 2)/^?} else {^//^block(i)^//^?}^/);
-                *///?}
+                /^font.drawInBatch(component, f, (float) 0, -2130706433, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, k, i);
+                font.drawInBatch(component, f, (float) 0, -1, false, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, LightTexture./^¹? if >=1.21.3 {¹^/lightCoordsWithEmission(i, 2)/^¹?} else {¹^//^¹block(i)¹^//^¹?}¹^/);
+                ^///?}
             }
             poseStack.popPose();
         }
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class CreeperRendererMixin {}
+//?}

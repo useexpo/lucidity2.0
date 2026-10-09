@@ -1,8 +1,11 @@
 package ml.mypals.lucidity.features.imageRender;
 
-//? if >=1.21.5 {
-import com.mojang.blaze3d.opengl.GlStateManager;
-//?} else {
+//? if >=26.1 {
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
+//?} else if >=1.21.5 {
+/*import com.mojang.blaze3d.opengl.GlStateManager;
+*///?} else {
 /*import com.mojang.blaze3d.platform.GlStateManager;
 *///?}
 import com.mojang.blaze3d.platform.NativeImage;
@@ -14,13 +17,13 @@ import ml.mypals.ryansrenderingkit.builders.vertexBuilders.VertexBuilder;
 import ml.mypals.ryansrenderingkit.shape.Shape;
 import ml.mypals.ryansrenderingkit.shape.basics.tags.EmptyMesh;
 import ml.mypals.ryansrenderingkit.transform.shapeTransformers.DefaultTransformer;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 //? if >=1.21.5 {
@@ -45,31 +48,31 @@ import java.util.function.Function;
 
 import static ml.mypals.lucidity.LucidityModInfo.MOD_ID;
 import static ml.mypals.lucidity.config.ImageRendererConfigs.*;
-//? if >=1.21.5 {
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+//? if >=1.21.5 && <26.1 {
+/*import com.mojang.blaze3d.pipeline.RenderPipeline;
 import static net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED_SNIPPET;
-//?}
+*///?}
 public class MediaShape extends Shape implements EmptyMesh {
 
-    //? >=1.21.5 {
-    public static final RenderPipeline MEDIA_SHAPE_TEXTURE;
-    private static final Function<ResourceLocation, RenderType> MEDIA_SHAPE_RENDER_TYPE;
+    //? if >=1.21.5 && <26.1 {
+    /*public static final RenderPipeline MEDIA_SHAPE_TEXTURE;
+    private static final Function<Identifier, RenderType> MEDIA_SHAPE_RENDER_TYPE;
     static {
         MEDIA_SHAPE_TEXTURE = RenderPipelines.register(RenderPipeline.builder(GUI_TEXTURED_SNIPPET).withCull(false).withLocation("pipeline/gui_textured").build());
-        MEDIA_SHAPE_RENDER_TYPE = Util.memoize((resourceLocation) -> RenderType.create("media_shape_texture", 1536, RenderPipelines.GUI_TEXTURED, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation/*? if <1.21.6 {*//*, TriState.DEFAULT*//*?}*/, false)).createCompositeState(false)));
+        MEDIA_SHAPE_RENDER_TYPE = Util.memoize((resourceLocation) -> RenderType.create("media_shape_texture", 1536, RenderPipelines.GUI_TEXTURED, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false)).createCompositeState(false)));
     }
-    //?}
+    *///?}
 
 
     private MediaData mediaData;
 
-    private ResourceLocation currentTextureId;
+    private Identifier currentTextureId;
 
     private int currentFrame = 0;
     private long lastFrameTime = 0;
 
-    public static final ResourceLocation LOST = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/lost-file.png");
-    public static final ResourceLocation LOADING = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/loading.png");
+    public static final Identifier LOST = Identifier.fromNamespaceAndPath(MOD_ID, "textures/lost-file.png");
+    public static final Identifier LOADING = Identifier.fromNamespaceAndPath(MOD_ID, "textures/loading.png");
 
     public MediaShape(Color color, Vec3 center, boolean seeThrough, MediaData mediaData) {
         super(RenderingType.IMMEDIATE,
@@ -152,11 +155,11 @@ public class MediaShape extends Shape implements EmptyMesh {
 
     @Override
     protected void generateRawGeometry(boolean b) {
-        this.model_vertexes.clear();
-        this.model_vertexes.add(new Vec3(-1, -1, 0));
-        this.model_vertexes.add(new Vec3(1, -1, 0));
-        this.model_vertexes.add(new Vec3(1, 1, 0));
-        this.model_vertexes.add(new Vec3(-1, 1, 0));
+        this.modelVertexes.clear();
+        this.modelVertexes.add(new Vec3(-1, -1, 0));
+        this.modelVertexes.add(new Vec3(1, -1, 0));
+        this.modelVertexes.add(new Vec3(1, 1, 0));
+        this.modelVertexes.add(new Vec3(-1, 1, 0));
 
         this.indexBuffer = new int[]{
                 0, 1, 3,
@@ -215,57 +218,70 @@ public class MediaShape extends Shape implements EmptyMesh {
         float scaledWidth = (float) (textureWidth.get() * mediaData.scale.x);
         float scaledHeight = (float) (textureHeight.get() * mediaData.scale.y);
 
-        this.model_vertexes.clear();
-        this.model_vertexes.add(new Vec3(-scaledWidth, -scaledHeight, 0));
-        this.model_vertexes.add(new Vec3(scaledWidth, -scaledHeight, 0));
-        this.model_vertexes.add(new Vec3(scaledWidth, scaledHeight, 0));
-        this.model_vertexes.add(new Vec3(-scaledWidth, scaledHeight, 0));
+        this.modelVertexes.clear();
+        this.modelVertexes.add(new Vec3(-scaledWidth, -scaledHeight, 0));
+        this.modelVertexes.add(new Vec3(scaledWidth, -scaledHeight, 0));
+        this.modelVertexes.add(new Vec3(scaledWidth, scaledHeight, 0));
+        this.modelVertexes.add(new Vec3(-scaledWidth, scaledHeight, 0));
 
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+        //? if >=26.1 {
+        ByteBufferBuilder byteBuffer = new ByteBufferBuilder(1536);
+        BufferBuilder bufferBuilder = new BufferBuilder(
+                byteBuffer,
+                PrimitiveTopology.QUADS,
+                DefaultVertexFormat.POSITION_TEX_COLOR
+        );
+        //?} else {
+        /*BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
                 VertexFormat.Mode.QUADS,
                 DefaultVertexFormat.POSITION_TEX_COLOR
         );
-
-
-
-        bufferBuilder.addVertex(builder.getPositionMatrix(),
-                        (float) model_vertexes.get(0).x, (float) model_vertexes.get(0).y, (float) model_vertexes.get(0).z)
-                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(0.0f, 1.0f).setLight(LightTexture.FULL_BRIGHT);
-        bufferBuilder.addVertex(builder.getPositionMatrix(),
-                        (float) model_vertexes.get(1).x, (float) model_vertexes.get(1).y, (float) model_vertexes.get(1).z)
-                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(1.0f, 1.0f).setLight(LightTexture.FULL_BRIGHT);
-        bufferBuilder.addVertex(builder.getPositionMatrix(),
-                        (float) model_vertexes.get(2).x, (float) model_vertexes.get(2).y, (float) model_vertexes.get(2).z)
-                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(1.0f, 0.0f).setLight(LightTexture.FULL_BRIGHT);
-        bufferBuilder.addVertex(builder.getPositionMatrix(),
-                        (float) model_vertexes.get(3).x, (float) model_vertexes.get(3).y, (float) model_vertexes.get(3).z)
-                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(0.0f, 0.0f).setLight(LightTexture.FULL_BRIGHT);
-
-
-        //? if >=1.21.6 {
-        RenderType renderType = MEDIA_SHAPE_RENDER_TYPE.apply(currentTextureId);
-        //?} else if >=1.21.5 {
-        /*RenderType renderType = RenderType.guiTextured(currentTextureId);
-        *///?} else {
-        
-        /*RenderSystem.setShaderTexture(0, currentTextureId);
-        //? if >=1.21.3 {
-        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
-        //?} else {
-        /^RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        ^///?}
         *///?}
+
+        bufferBuilder.addVertex(builder.getPositionMatrix(),
+                        (float) modelVertexes.get(0).x, (float) modelVertexes.get(0).y, (float) modelVertexes.get(0).z)
+                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(0.0f, 1.0f).setLight(net.minecraft.util.LightCoordsUtil.FULL_BRIGHT);
+        bufferBuilder.addVertex(builder.getPositionMatrix(),
+                        (float) modelVertexes.get(1).x, (float) modelVertexes.get(1).y, (float) modelVertexes.get(1).z)
+                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(1.0f, 1.0f).setLight(net.minecraft.util.LightCoordsUtil.FULL_BRIGHT);
+        bufferBuilder.addVertex(builder.getPositionMatrix(),
+                        (float) modelVertexes.get(2).x, (float) modelVertexes.get(2).y, (float) modelVertexes.get(2).z)
+                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(1.0f, 0.0f).setLight(net.minecraft.util.LightCoordsUtil.FULL_BRIGHT);
+        bufferBuilder.addVertex(builder.getPositionMatrix(),
+                        (float) modelVertexes.get(3).x, (float) modelVertexes.get(3).y, (float) modelVertexes.get(3).z)
+                .setColor(this.baseColor.getRed(), this.baseColor.getGreen(), this.baseColor.getBlue(), this.baseColor.getAlpha()).setUv(0.0f, 0.0f).setLight(net.minecraft.util.LightCoordsUtil.FULL_BRIGHT);
+
+        //? if >=26.1 {
+        //?} else if >=1.21.6 {
+        /*RenderType renderType = MEDIA_SHAPE_RENDER_TYPE.apply(currentTextureId);
         GlStateManager._enableDepthTest();
         if (this.seeThrough) GlStateManager._disableDepthTest();
         GlStateManager._disableCull();
-
-        //? if >=1.21.5 {
         renderType.draw(bufferBuilder.buildOrThrow());
-        //?} else {
-        /*BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-        *///?}
         GlStateManager._enableCull();
         if (this.seeThrough) GlStateManager._enableDepthTest();
+        *///?} else if >=1.21.5 {
+        /*RenderType renderType = RenderType.guiTextured(currentTextureId);
+        GlStateManager._enableDepthTest();
+        if (this.seeThrough) GlStateManager._disableDepthTest();
+        GlStateManager._disableCull();
+        renderType.draw(bufferBuilder.buildOrThrow());
+        GlStateManager._enableCull();
+        if (this.seeThrough) GlStateManager._enableDepthTest();
+        *///?} else {
+        /*RenderSystem.setShaderTexture(0, currentTextureId);
+        //? if >=1.21.3 {
+        /^RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
+        ^///?} else {
+        /^RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        ^///?}
+        GlStateManager._enableDepthTest();
+        if (this.seeThrough) GlStateManager._disableDepthTest();
+        GlStateManager._disableCull();
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        GlStateManager._enableCull();
+        if (this.seeThrough) GlStateManager._enableDepthTest();
+        *///?}
     }
 
     private void updateAnimationFrame() {
@@ -314,7 +330,7 @@ public class MediaShape extends Shape implements EmptyMesh {
                 shape.putCustomData("ownedAxis", axisObject);
                 shape.putCustomData("color", shape.baseColor);
                 shape.setBaseColor(new Color(255,255,255,50));
-                player.swing(player.getUsedItemHand());
+                player.swing(player.getUsedItemHand(), net.minecraft.world.item.component.SwingAnimation.DEFAULT, false);
                 Vec3 pos = transformer.getShapeWorldPivot(true);
                 for(int i=0;i<20;i++){
                     player.level().addParticle(
@@ -329,7 +345,7 @@ public class MediaShape extends Shape implements EmptyMesh {
                 axisObject.destroy();
                 shape.putCustomData("ownedAxis", null);
                 shape.setBaseColor(shape.getCustomData("color", Color.WHITE));
-                player.swing(player.getUsedItemHand());
+                player.swing(player.getUsedItemHand(), net.minecraft.world.item.component.SwingAnimation.DEFAULT, false);
 
                 for(Map.Entry<String, MediaEntry> entry: ImageRenderManager.images.entrySet()){
                     MediaEntry mediaEntry = entry.getValue();
@@ -369,7 +385,7 @@ public class MediaShape extends Shape implements EmptyMesh {
         return mediaData;
     }
 
-    public ResourceLocation getCurrentTextureId() {
+    public Identifier getCurrentTextureId() {
         return currentTextureId;
     }
 
@@ -389,7 +405,7 @@ public class MediaShape extends Shape implements EmptyMesh {
         public int index;
         public String path;
         public String name;
-        public ResourceLocation[] textureIDs;
+        public Identifier[] textureIDs;
         public Vec3 pos;
         public Quaternionf rotation;
         public Vec3 scale;
@@ -400,7 +416,7 @@ public class MediaShape extends Shape implements EmptyMesh {
         private boolean selected;
 
         public MediaData(int index, String path, String name,
-                         @Nullable ResourceLocation[] textureIDs,
+                         @Nullable Identifier[] textureIDs,
                          double[] pos, double[] rotation, double[] scale,
                          @NotNull MediaTypeDetector.MediaType type, boolean ready) {
             this.index = index;
@@ -478,7 +494,7 @@ public class MediaShape extends Shape implements EmptyMesh {
             return ready;
         }
 
-        public ResourceLocation[] getTextureIDs() {
+        public Identifier[] getTextureIDs() {
             return textureIDs;
         }
 

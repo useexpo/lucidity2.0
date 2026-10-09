@@ -10,7 +10,8 @@ import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEventPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,8 +31,8 @@ public class ClientPacketListenerMixin {
         if(BLOCK_EVENT_VISUALIZE.getBooleanValue()) {
             BoxWireframeShape boxShape = ShapeGenerator.generateBoxWireframe()
                     .construction(BoxShape.BoxConstructionType.CORNERS)
-                    .aabb(packet.getPos().getCenter().subtract(0.5,0.5,0.5),
-                            packet.getPos().getCenter().add(0.5,0.5,0.5))
+                    .aabb(Vec3.atCenterOf(packet.getPos()).subtract(0.5,0.5,0.5),
+                            Vec3.atCenterOf(packet.getPos()).add(0.5,0.5,0.5))
                     .transform((boxTransformer -> {
                         Shape shape = boxTransformer.getShape();
                         if(!BLOCK_EVENT_VISUALIZE.getBooleanValue()){
@@ -50,11 +51,11 @@ public class ClientPacketListenerMixin {
                     .seeThrough(true)
                     .edgeWidth(3)
                     .build(Shape.RenderingType.BATCH);
-            ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"block_event_"+packet.getPos().hashCode()),
+            ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"block_event_"+packet.getPos().hashCode()),
             boxShape);
             TextShape textShape = ShapeGenerator.generateText()
                     .texts(packet.getBlock().getName().getString(),"Type:"+packet.getB0(),"Data:"+packet.getB1())
-                    .pos(packet.getPos().above().getCenter())
+                    .pos(Vec3.atCenterOf(packet.getPos().above()))
                     .shadow(false)
                     .outline(false)
                     .billBoardMode(TextShape.BillBoardMode.ALL)
@@ -73,7 +74,7 @@ public class ClientPacketListenerMixin {
                         }
                     }))
                     .build();
-            ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"block_event_text_"+packet.getPos().hashCode()),
+            ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"block_event_text_"+packet.getPos().hashCode()),
                     textShape);
         }
     }

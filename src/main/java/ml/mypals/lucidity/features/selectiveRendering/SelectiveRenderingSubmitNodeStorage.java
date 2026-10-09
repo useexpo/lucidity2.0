@@ -4,21 +4,20 @@ package ml.mypals.lucidity.features.selectiveRendering;
 
 /*public class SelectiveRenderingSubmitNodeStorage {
 
-}
-*///?} else {
-import com.mojang.blaze3d.vertex.PoseStack;
+*///?} else if <26.1 {
+/*import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HitboxesRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -105,6 +104,10 @@ public class SelectiveRenderingSubmitNodeStorage extends SubmitNodeStorage imple
     public SubmitNodeCollection order(int i) {
         return ((SubmitNodeStorage)base).order(i);
     }
+}
+*///?} else {
+public class SelectiveRenderingSubmitNodeStorage {
+    public SelectiveRenderingSubmitNodeStorage(Object o) {}
 }
 //?}
 

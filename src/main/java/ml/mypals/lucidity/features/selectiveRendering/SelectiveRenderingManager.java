@@ -1,6 +1,6 @@
 package ml.mypals.lucidity.features.selectiveRendering;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import ml.mypals.lucidity.Lucidity;
 import ml.mypals.lucidity.utils.BlockMatchRule;
@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -161,7 +161,7 @@ public class SelectiveRenderingManager {
                 if (!entityString.contains(":")) {
                     entityString = "minecraft:" + entityString;
                 }
-                ResourceLocation entityId = ResourceLocation.tryParse(entityString);
+                Identifier entityId = Identifier.tryParse(entityString);
                 //? if >=1.21.3 {
                 EntityType<?> targetEntity = BuiltInRegistries.ENTITY_TYPE.getValue(entityId);
                 //?} else {
@@ -181,7 +181,7 @@ public class SelectiveRenderingManager {
                 if (!particleString.contains(":")) {
                     particleString = "minecraft:" + particleString;
                 }
-                ResourceLocation particleId = ResourceLocation.tryParse(particleString);
+                Identifier particleId = Identifier.tryParse(particleString);
                 //? if >=1.21.3 {
                 ParticleType<?> targetParticle = BuiltInRegistries.PARTICLE_TYPE.getValue(particleId);
                  //?} else {
@@ -199,7 +199,7 @@ public class SelectiveRenderingManager {
             if (!name.contains(":")) {
                 name = "minecraft:" + name;
             }
-            ResourceLocation id = ResourceLocation.tryParse(name);
+            Identifier id = Identifier.tryParse(name);
             //? if >=1.21.3 {
             wand = BuiltInRegistries.ITEM.getValue(id);
              //?} else {
@@ -399,7 +399,7 @@ public class SelectiveRenderingManager {
             lightUpdateTask = null;
         }
 
-        client.levelRenderer.allChanged();
+        client.levelExtractor.allChanged();
 
         if (!FORCE_LIGHT_UPDATE.getBooleanValue()) {
             return;

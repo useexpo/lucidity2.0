@@ -1,11 +1,12 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.vanilla.light;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,15 +18,15 @@ import static ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingM
 //? if >=1.21.5 {
 @Mixin(ModelBlockRenderer.AmbientOcclusionRenderStorage.class)
 //?} else {
-/*@Mixin(ModelBlockRenderer.AmbientOcclusionFace.class)
-*///?}
+/^@Mixin(ModelBlockRenderer.AmbientOcclusionFace.class)
+^///?}
 public class AoFaceMixin{
     @WrapOperation(
             //? if >=1.21.5 {
             method = "calculate(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Z)V",
             //?} else {
-            /*method = "calculate(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;[FLjava/util/BitSet;Z)V",
-            *///?}
+            /^method = "calculate(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;[FLjava/util/BitSet;Z)V",
+            ^///?}
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/BlockAndTintGetter;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"
@@ -39,3 +40,11 @@ public class AoFaceMixin{
         return original.call(world, pos);
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class AoFaceMixin {
+}
+//?}

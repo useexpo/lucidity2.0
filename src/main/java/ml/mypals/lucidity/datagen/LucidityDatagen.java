@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.datagen;
 
-import ml.mypals.lucidity.Lucidity;
+//? if <26.1 {
+/*import ml.mypals.lucidity.Lucidity;
 import ml.mypals.lucidity.datagen.lang.LucidityLanguageGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -14,3 +15,4 @@ public class LucidityDatagen implements DataGeneratorEntrypoint {
         lucidityLanguageGenerator.generateTranslations(pack);
     }
 }
+*///?}

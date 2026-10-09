@@ -8,17 +8,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import ml.mypals.lucidity.features.selectiveRendering.*;
 import net.minecraft.client.Minecraft;
+//? if >=1.21.9 && <26.1 {
+/*import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-//? if >=1.21.9 {
-import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
-//?}
+*///?}
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
 
-//? if >=1.21.9 {
-@Debug(export = true)
+//? if >=1.21.9 && <26.1 {
+/*@Debug(export = true)
 @Mixin(BlockFeatureRenderer.class)
 public class BlockFeatureRendererMixin {
     @WrapOperation(
@@ -65,8 +63,8 @@ public class BlockFeatureRendererMixin {
         }
     }
 }
-//?} else {
-/*@Mixin(Minecraft.class)
+*///?} else {
+@Mixin(Minecraft.class)
 public class BlockFeatureRendererMixin {
 }
-*///?}
+//?}

@@ -12,6 +12,7 @@ val modVersion = "${property("mod.version")}+${stonecutter.current.version}"
 version = modVersion
 base.archivesName = property("mod.id") as String
 val requiredJava = when {
+    stonecutter.eval(stonecutter.current.version, ">=26.1") -> JavaVersion.toVersion(25)
     stonecutter.eval(stonecutter.current.version, ">=1.20.6") -> JavaVersion.VERSION_21
     stonecutter.eval(stonecutter.current.version, ">=1.18") -> JavaVersion.VERSION_17
     stonecutter.eval(stonecutter.current.version, ">=1.17") -> JavaVersion.VERSION_16
@@ -44,19 +45,31 @@ val minecraft = stonecutter.current.version
 dependencies {
 
     minecraft("com.mojang:minecraft:${stonecutter.current.version}")
-    mappings(loom.officialMojangMappings())
+    if (stonecutter.eval(minecraft, ">=26.1")) {
+        loom.noIntermediateMappings()
+        mappings(loom.layered {
+            mappings(rootProject.file("mappings/26.3.tiny"))
+        })
+    } else {
+        mappings(loom.officialMojangMappings())
+    }
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modCompileOnly("com.terraformersmc:modmenu:${property("deps.mod_menu_version")}")
-    modImplementation("io.github.hotpad100c:ryansrenderingkit:${property("deps.ryansrenderingkit_version")}")
+    if (stonecutter.eval(minecraft, ">=26.1")) {
+        modImplementation("maven.modrinth:ryansrenderingkit:${property("deps.ryansrenderingkit_version")}")
+        modImplementation("maven.modrinth:malilib:${property("deps.malilib_version")}")
+    } else {
+        modImplementation("io.github.hotpad100c:ryansrenderingkit:${property("deps.ryansrenderingkit_version")}")
+        modImplementation("com.github.sakura-ryoko:malilib:${property("deps.malilib_version")}")
+    }
     //modImplementation("maven.modrinth:sodium:${property("deps.sodium_version")}")
     modCompileOnly("maven.modrinth:sodium:${property("deps.sodium_version")}")
-
-    modImplementation("com.github.sakura-ryoko:malilib:${property("deps.malilib_version")}")
 
     //modCompileOnly(files("pca-protocol-${property("deps.pca_version")}"))
 }
 val accesswidener = when {
+    stonecutter.eval(minecraft, ">=26.1") -> "26.3.accesswidener"
     stonecutter.eval(minecraft, ">=1.21.9") -> "1.21.9.accesswidener"
     stonecutter.eval(minecraft, ">=1.21.6") -> "1.21.6.accesswidener"
     stonecutter.eval(minecraft, ">=1.21.5") -> "1.21.5.accesswidener"
@@ -115,6 +128,11 @@ tasks {
         from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
         dependsOn("build")
+    }
+    if (stonecutter.eval(minecraft, ">=26.1")) {
+        remapSourcesJar {
+            enabled = false
+        }
     }
 }
 

@@ -1,15 +1,16 @@
 package ml.mypals.lucidity.mixin.features.worldEatwrMineHelper.fabric;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import ml.mypals.lucidity.features.worldEaterHelper.WorldEaterHelperManager;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 //? if >=1.21.5 {
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?} else {
-/*import net.minecraft.client.resources.model.BakedModel;
- *///?}
+/^import net.minecraft.client.resources.model.BakedModel;
+ ^///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +32,7 @@ public class TerrainRenderContextMixin {
     }
 
     //?} else {
-    /*@WrapMethod(method = "tessellateBlock")
+    /^@WrapMethod(method = "tessellateBlock")
     public void tessellateBlock(BlockState blockState, BlockPos blockPos, BakedModel model, PoseStack matrixStack, Operation<Void> original) {
         if (WORLD_EATER_MINE_HELPER.getBooleanValue() && WorldEaterHelperManager.shouldRender(blockState,blockPos)) {
             original.call(blockState, blockPos, getExtruded(model), matrixStack);
@@ -39,5 +40,14 @@ public class TerrainRenderContextMixin {
             original.call(blockState, blockPos, model, matrixStack);
         }
     }
-    *///?}
+    ^///?}
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class TerrainRenderContextMixin {
+}
+//?}
+

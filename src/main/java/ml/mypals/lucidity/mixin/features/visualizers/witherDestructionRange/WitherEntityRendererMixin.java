@@ -1,20 +1,21 @@
 package ml.mypals.lucidity.mixin.features.visualizers.witherDestructionRange;
 
-//? if >=1.21.5 {
+//? if <26.1 {
+/*//? if >=1.21.5 {
 import com.mojang.blaze3d.opengl.GlStateManager;
 //?} else {
-/*import com.mojang.blaze3d.platform.GlStateManager;
-*///?}
+/^import com.mojang.blaze3d.platform.GlStateManager;
+^///?}
 import com.mojang.blaze3d.vertex.PoseStack;
 import fi.dy.masa.malilib.util.data.Color4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.WitherBossModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.WitherBossRenderer;
 //? if >=1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 //?}
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -46,19 +47,19 @@ public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, 
     public void submit(@NotNull WitherRenderState witherRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, @NotNull CameraRenderState cameraRenderState) {
         super.submit(witherRenderState, poseStack, submitNodeCollector, cameraRenderState);
     //?} else {
-    /*@Override
+    /^@Override
     public void render(@NotNull WitherRenderState witherRenderState, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
         super.render(witherRenderState, poseStack, multiBufferSource, i);
-    *///?}
+    ^///?}
 //?} else {
-/*public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, WitherBossModel<WitherBoss>> {
+/^public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, WitherBossModel<WitherBoss>> {
     public WitherEntityRendererMixin(EntityRendererProvider.Context context, WitherBossModel<WitherBoss> entityModel, float f) {
         super(context, entityModel, f);
     }
     @Override
     public void render(@NotNull WitherBoss witherRenderState,float e,float g, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
         super.render(witherRenderState,e,g, poseStack, multiBufferSource, i);
-*///?}
+^///?}
 
         if (WITHER_DESTRUCTION_VISUALIZE.getBooleanValue()) {
 
@@ -85,7 +86,7 @@ public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, 
         double worldY = witherRenderState.y;
         double worldZ = witherRenderState.z;
     //?} else {
-    /*@Unique
+    /^@Unique
     private static @NotNull AABB getDestructionBox(@NotNull WitherBoss witherRenderState) {
         float bbw = witherRenderState.getBbWidth();
         float bbh = witherRenderState.getBbHeight();
@@ -95,7 +96,7 @@ public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, 
         double worldX = witherRenderState.getX();
         double worldY = witherRenderState.getY();
         double worldZ = witherRenderState.getZ();
-    *///?}
+    ^///?}
 
         int blockX = Mth.floor(worldX);
         int blockY = Mth.floor(worldY);
@@ -111,6 +112,12 @@ public abstract class WitherEntityRendererMixin extends MobRenderer<WitherBoss, 
         double maxY = offsetY + k + 1;
         double maxZ = offsetZ + j + 1;
 
-        return new AABB(minX, offsetY, minZ, maxX, maxY, maxZ);
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class WitherEntityRendererMixin {}
+//?}

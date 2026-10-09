@@ -1,9 +1,10 @@
 package ml.mypals.lucidity.mixin.features.visualizers.containerOutputPreview;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -41,7 +42,7 @@ public abstract class HandledScreenMixin<T extends AbstractContainerMenu> extend
     }
 
     @Unique
-    private void renderComparatorOutput(GuiGraphics context, int mouseX, int mouseY){
+    private void renderComparatorOutput(GuiGraphicsExtractor context, int mouseX, int mouseY){
         if (this.minecraft == null || this.minecraft.player == null) {
             return;
         }
@@ -98,7 +99,7 @@ public abstract class HandledScreenMixin<T extends AbstractContainerMenu> extend
     }
 
     @WrapMethod(method = "renderLabels")
-    private void drawForeground(GuiGraphics guiGraphics, int i, int j, Operation<Void> original) {
+    private void drawForeground(GuiGraphicsExtractor guiGraphics, int i, int j, Operation<Void> original) {
         if (!CONTAINER_SIGNAL_PREVIEW.getBooleanValue()) {
             original.call(guiGraphics, i, j);
         }else {
@@ -107,3 +108,11 @@ public abstract class HandledScreenMixin<T extends AbstractContainerMenu> extend
     }
 
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class HandledScreenMixin {
+}
+//?}

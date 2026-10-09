@@ -1,23 +1,21 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.sodium;
 
-import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
+//? if <26.1 {
+/*import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import net.caffeinemc.mods.sodium.client.render.frapi.mesh.MutableQuadViewImpl;
 //? if <=1.21.4 {
-/*import net.minecraft.client.resources.model.BakedModel;
-*///?} else {
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+/^import net.minecraft.client.resources.model.BakedModel;
+^///?} else {
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.DefaultMaterials;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
 
-
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,10 +28,9 @@ public class BlockRendererMixin {
     private int alpha;
 
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
-
     //? if <=1.21.4 {
-    /*private void onRenderModel(BakedModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
-    *///?} else {
+    /^private void onRenderModel(BakedModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
+    ^///?} else {
     private void onRenderModel(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
     //?}
         alpha = SelectiveRenderingManager.shouldRenderBlock(state,pos)?-1:SelectiveRenderingConfigs.HIDDEN_BLOCK_TRANSPARENCY.getIntegerValue();
@@ -60,3 +57,11 @@ public class BlockRendererMixin {
         return material;
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class BlockRendererMixin {
+}
+//?}

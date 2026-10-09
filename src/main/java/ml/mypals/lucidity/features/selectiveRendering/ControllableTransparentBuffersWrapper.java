@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.features.selectiveRendering;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+//? if <26.1 {
+/*import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import ml.mypals.lucidity.mixin.features.selectiveRendering.accessor.BufferSourceAccessor;
 import ml.mypals.lucidity.mixin.features.selectiveRendering.accessor.CompositeStateAccessor;
@@ -8,7 +9,7 @@ import ml.mypals.lucidity.mixin.features.selectiveRendering.accessor.EmptyTextur
 import ml.mypals.lucidity.mixin.features.selectiveRendering.accessor.RenderStateAccessor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +36,8 @@ public class ControllableTransparentBuffersWrapper extends MultiBufferSource.Buf
         }
         return multiBufferSource.getBuffer(renderType);
         //?} else {
-        /*return getTransparentBuffer(real);
-        *///?}
+        /^return getTransparentBuffer(real);
+        ^///?}
     }
     public @NotNull VertexConsumer getTransparentBuffer(@NotNull RenderType renderType) {
         if ((renderType.format() == DefaultVertexFormat.NEW_ENTITY) && renderType instanceof RenderType.CompositeRenderType composite) {
@@ -103,3 +104,7 @@ public class ControllableTransparentBuffersWrapper extends MultiBufferSource.Buf
     }
 
 }
+*///?} else {
+public class ControllableTransparentBuffersWrapper {
+}
+//?}

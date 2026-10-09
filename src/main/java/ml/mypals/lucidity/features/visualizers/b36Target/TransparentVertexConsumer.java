@@ -37,4 +37,22 @@ public class TransparentVertexConsumer implements VertexConsumer {
     public @NotNull VertexConsumer setNormal(float f, float g, float h) {
         return base.setNormal(f,g,h);
     }
+
+    //? if >=26.1 {
+    @Override
+    public @NotNull VertexConsumer setLineWidth(float width) {
+        base.setLineWidth(width);
+        return this;
+    }
+
+    @Override
+    public @NotNull VertexConsumer setUv3(float u, float v) {
+        return base.setUv3(u, v);
+    }
+
+    @Override
+    public @NotNull VertexConsumer setColor(int color) {
+        return base.setColor((color & 0x00FFFFFF) | (100 << 24));
+    }
+    //?}
 }

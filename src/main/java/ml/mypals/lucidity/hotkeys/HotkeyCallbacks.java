@@ -13,21 +13,25 @@ import ml.mypals.lucidity.config.FeatureToggle;
 import ml.mypals.lucidity.features.imageRender.ImageRenderManager;
 import ml.mypals.lucidity.features.worldEaterHelper.WorldEaterHelperManager;
 import ml.mypals.lucidity.gui.LucidityGuiConfigs;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+//? if >=26.1 {
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+//?} else {
+/*import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import static org.lwjgl.glfw.GLFW.*;
+*///?}
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static ml.mypals.lucidity.LucidityModInfo.MOD_ID;
 import static ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager.*;
-import static org.lwjgl.glfw.GLFW.*;
 
 public class HotkeyCallbacks {
     //? if >=1.21.9 {
     static KeyMapping.Category SELECTIVE_RENDERING = KeyMapping.Category.register(
-            ResourceLocation.fromNamespaceAndPath(MOD_ID,"category.selective_renderings")
+            Identifier.fromNamespaceAndPath(MOD_ID,"category.selective_renderings")
     );
     //?}
     public static KeyMapping addArea;
@@ -36,17 +40,17 @@ public class HotkeyCallbacks {
     public static void init ()
     {
         Callbacks callback = new Callbacks();
-        LucidityConfigs.Other.EXPORTABLE_LIST.setValueChangeCallback(bl ->{Screen screen = Minecraft.getInstance().screen;if (screen instanceof GuiBase guiBase) {guiBase.initGui();}});
+        LucidityConfigs.Other.EXPORTABLE_LIST.setValueChangeCallback(bl ->{Screen screen = Minecraft.getInstance().gui.screen();if (screen instanceof GuiBase guiBase) {guiBase.initGui();}});
         LucidityConfigs.Generic.OPEN_CONFIG_GUI.getKeybind().setCallback(callback);
         LucidityConfigs.Generic.WORLD_EATER_MINE_HELPER_TARGETS.setValueChangeCallback(configStringList -> WorldEaterHelperManager.refresh());
         LucidityConfigs.Generic.WORLD_EATER_MINE_HELPER_HEIGHT.setValueChangeCallback(configFloat -> WorldEaterHelperManager.refresh());
-        FeatureToggle.FLUID_TRANSPARENCY_OVERRIDE.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelRenderer.allChanged());
+        FeatureToggle.FLUID_TRANSPARENCY_OVERRIDE.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelExtractor.allChanged());
         FeatureToggle.WORLD_EATER_MINE_HELPER.setValueChangeCallback(iConfigBoolean -> WorldEaterHelperManager.refresh());
-        FeatureToggle.FLUID_SOURCE_HIGHLIGHT.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelRenderer.allChanged());
-        FeatureToggle.BLOCK_NO_RANDOM_OFFSET.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelRenderer.allChanged());
+        FeatureToggle.FLUID_SOURCE_HIGHLIGHT.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelExtractor.allChanged());
+        FeatureToggle.BLOCK_NO_RANDOM_OFFSET.setValueChangeCallback(iConfigBoolean -> Minecraft.getInstance().levelExtractor.allChanged());
         ImageRendererConfigs.IMAGES.setValueChangeCallback(configStringList -> ImageRenderManager.prepareImages());
         SelectiveRenderingConfigs.APPLY_TARGET_MODE.setValueChangeCallback((string)->scheduleChunkRebuild());
-        SelectiveRenderingConfigs.HIDDEN_BLOCK_TRANSPARENCY.setValueChangeCallback((value)->Minecraft.getInstance().levelRenderer.allChanged());
+        SelectiveRenderingConfigs.HIDDEN_BLOCK_TRANSPARENCY.setValueChangeCallback((value)->Minecraft.getInstance().levelExtractor.allChanged());
         SelectiveRenderingConfigs.SELECTED_AREAS.setValueChangeCallback((string)->resolveSelectedAreasFromString(string.getStrings()));
         SelectiveRenderingConfigs.SELECTED_BLOCKS.setValueChangeCallback((string)->resolveSelectedBlockStatesFromString(string.getStrings()));
         SelectiveRenderingConfigs.SELECTED_ENTITIES.setValueChangeCallback((string)->resolveSelectedEntityTypesFromString(string.getStrings()));
@@ -56,15 +60,32 @@ public class HotkeyCallbacks {
     }
     public static void registerVanillaKeyBindings()
     {
-        addArea = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        //? if >=26.1 {
+        addArea = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.selective_renderings.addSelection",
+            InputConstants.KEY_EQUALS,
+            SELECTIVE_RENDERING
+        ));
+        switchRenderMode = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.selective_renderings.renderingMode",
+                InputConstants.KEY_LALT,
+                SELECTIVE_RENDERING
+        ));
+        deleteArea = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.selective_renderings.removeSelection",
+                InputConstants.KEY_MINUS,
+                SELECTIVE_RENDERING
+        ));
+        //?} else {
+        /*addArea = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "key.selective_renderings.addSelection",
             InputConstants.Type.KEYSYM,
             GLFW_KEY_EQUAL,
             //? if >=1.21.9 {
             SELECTIVE_RENDERING
             //?} else {
-            /*"category.selective_renderings"
-            *///?}
+            /^"category.selective_renderings"
+            ^///?}
         ));
         switchRenderMode = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.selective_renderings.renderingMode",
@@ -73,8 +94,8 @@ public class HotkeyCallbacks {
                 //? if >=1.21.9 {
                 SELECTIVE_RENDERING
                 //?} else {
-                /*"category.selective_renderings"
-                 *///?}
+                /^"category.selective_renderings"
+                 ^///?}
         ));
         deleteArea = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.selective_renderings.removeSelection",
@@ -83,9 +104,10 @@ public class HotkeyCallbacks {
                 //? if >=1.21.9 {
                 SELECTIVE_RENDERING
                 //?} else {
-                /*"category.selective_renderings"
-                 *///?}
+                /^"category.selective_renderings"
+                 ^///?}
         ));
+        *///?}
     }
     public static class Callbacks implements IHotkeyCallback {
         @Override

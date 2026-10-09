@@ -1,11 +1,10 @@
 package ml.mypals.lucidity.utils;
-//? if >=1.21.5 {
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+//? if >=1.21.5 && <26.1 {
+/*import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.opengl.GlStateManager;
-//?} else {
+*///?} else if <1.21.5 {
 /*import com.mojang.blaze3d.platform.GlStateManager;
 //? if >=1.21.3 {
 import net.minecraft.client.renderer.CoreShaders;
@@ -20,18 +19,19 @@ public class LucidityRenderUtils {
     public static void renderBox(PoseStack poseStack,VertexConsumer vertexConsumer, AABB aABB, float f, float g, float h, float i) {
         renderBox(poseStack, vertexConsumer, aABB.minX, aABB.minY, aABB.minZ, aABB.maxX, aABB.maxY, aABB.maxZ, f, g, h, i, f, g, h);
     }
-    public static void renderBox(PoseStack poseStack, AABB aABB, float f, float g, float h, float i) {
+    //? if <26.1 {
+    /*public static void renderBox(PoseStack poseStack, AABB aABB, float f, float g, float h, float i) {
 
         //? if >= 1.21.6 {
 
         RenderType renderType = RenderType.translucentMovingBlock();
         //?} else if >=1.21.5 {
-        /*RenderType renderType = RenderType.translucent();
-        *///?} else if >=1.21.3 {
-        /*RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-        *///?} else {
-        /*RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        *///?}
+        /^RenderType renderType = RenderType.translucent();
+        ^///?} else if >=1.21.3 {
+        /^RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+        ^///?} else {
+        /^RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        ^///?}
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder vertexConsumer = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         renderBox(poseStack, vertexConsumer, aABB.minX, aABB.minY, aABB.minZ, aABB.maxX, aABB.maxY, aABB.maxZ, f, g, h, i, f, g, h);
@@ -44,13 +44,14 @@ public class LucidityRenderUtils {
             //? if >=1.21.5 {
             renderType.draw(builtBuffer);
             //?} else {
-            /*BufferUploader.drawWithShader(builtBuffer);
-            *///?}
+            /^BufferUploader.drawWithShader(builtBuffer);
+            ^///?}
             GlStateManager._disableBlend();
             builtBuffer.close();
         }catch (Exception ignored) {
         }
     }
+    *///?}
     public static void renderBox(PoseStack poseStack,VertexConsumer vertexConsumer, double d, double e, double f, double g, double h, double i, float j, float k, float l, float m, float n, float o, float p) {
 
         PoseStack.Pose pose = poseStack.last();

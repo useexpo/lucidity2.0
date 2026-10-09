@@ -6,7 +6,7 @@ import ml.mypals.ryansrenderingkit.shape.box.BoxShape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -55,7 +55,7 @@ public class NetherPosCaculatorManager {
             coordinatesEntries.removeAll(toRemove);
         }
 
-        player.swing(hand);
+        player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, false);
         cooldown = 2;
     }
 
@@ -101,22 +101,22 @@ public class NetherPosCaculatorManager {
 
             overworldPosInd = ShapeGenerator.generateBoxFace()
                     .size(new Vec3(1,1,1))
-                    .aabb(overworldPos.getCenter().subtract(0.5,0.5,0.5),overworldPos.getCenter().add(0.5,0.5,0.5))
+                    .aabb(Vec3.atCenterOf(overworldPos).subtract(0.5,0.5,0.5),Vec3.atCenterOf(overworldPos).add(0.5,0.5,0.5))
                     .color(color)
                     .seeThrough(true)
                     .transform(transformer->{
-                        float size = scaleByDistance(overworldPos.getCenter(),1f,20f);
+                        float size = scaleByDistance(Vec3.atCenterOf(overworldPos),1f,20f);
                         transformer.setDimension(new Vec3(size,size,size));
                     })
                     .build(Shape.RenderingType.BATCH);
 
             netherPosInd = ShapeGenerator.generateBoxFace()
                     .size(new Vec3(1,1,1))
-                    .aabb(netherpos.getCenter().subtract(0.5,0.5,0.5),netherpos.getCenter().add(0.5,0.5,0.5))
+                    .aabb(Vec3.atCenterOf(netherpos).subtract(0.5,0.5,0.5),Vec3.atCenterOf(netherpos).add(0.5,0.5,0.5))
                     .color(color)
                     .seeThrough(true)
                     .transform(transformer->{
-                        float size = scaleByDistance(netherpos.getCenter(),1f,20f);
+                        float size = scaleByDistance(Vec3.atCenterOf(netherpos),1f,20f);
                         transformer.setDimension(new Vec3(size,size,size));
                     })
                     .build(Shape.RenderingType.BATCH);
@@ -160,9 +160,9 @@ public class NetherPosCaculatorManager {
             }
         }
         public void submit(){
-            ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"indicator_overworld_"+overworldPos.hashCode()),
+            ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"indicator_overworld_"+overworldPos.hashCode()),
                     overworldPosInd);
-            ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"indicator_nether_"+netherpos.hashCode()),
+            ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"indicator_nether_"+netherpos.hashCode()),
                     netherPosInd);
         }
         public static float scaleByDistance(

@@ -21,7 +21,7 @@ import ml.mypals.lucidity.LucidityModInfo;
 import ml.mypals.lucidity.config.*;
 import ml.mypals.lucidity.features.yaclLikeConfig.YaclLikeConfigTab;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 //? if >=1.21.6 {
@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 
 import net.minecraft.client.input.MouseButtonEvent;
 //?}
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,23 +67,39 @@ public class LucidityGuiConfigs extends GuiConfigsBase {
     {
         return true;
     }
+    //? if >=26.1 {
     @Override
-    public void render(GuiGraphics drawContext, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor drawContext, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(drawContext, mouseX, mouseY, partialTicks);
+    }
+    @Override
+    public void extractBackground(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        if (this.minecraft.level == null) {
+            this.extractPanorama(guiGraphics, f);
+        }
+        this.extractMenuBackground(guiGraphics);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, this.getListY() - 6, 0.0F, 0.0F, this.width, 2, 32, 2);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, this.getListY()+this.getBrowserHeight(), 0.0F, 0.0F, this.width, 2, 32, 2);
+    }
+    //?} else {
+    /*@Override
+    public void render(GuiGraphicsExtractor drawContext, int mouseX, int mouseY, float partialTicks) {
         super.render(drawContext,mouseX,mouseY,partialTicks);
     }
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
+    public void renderBackground(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.minecraft.level == null) {
             this.renderPanorama(guiGraphics, f);
         }
         //? if <1.21.6 {
-        /*this.renderBlurredBackground(/^? if <=1.21.1 {^//^f^//^?}^/);
-        *///?}
+        /^this.renderBlurredBackground(//? if <=1.21.1 {f//?});^/
+        //?}
         this.renderMenuBackground(guiGraphics);
-        guiGraphics.blit(/*? if >= 1.21.6 {*/ RenderPipelines.GUI_TEXTURED,/*?} else if >=1.21.3 {*//*RenderType::guiTextured, *//*?}*/Screen.HEADER_SEPARATOR, 0, this.getListY() - 6, 0.0F, 0.0F, this.width, 2, 32, 2);
+        guiGraphics.blit(//? if >= 1.21.6 {RenderPipelines.GUI_TEXTURED,//?} else if >=1.21.3 {/^RenderType::guiTextured, ^///?}Screen.HEADER_SEPARATOR, 0, this.getListY() - 6, 0.0F, 0.0F, this.width, 2, 32, 2);
 
-        guiGraphics.blit(/*? if >= 1.21.6 {*/ RenderPipelines.GUI_TEXTURED,/*?} else if >=1.21.3 {*//*RenderType::guiTextured, *//*?}*/Screen.HEADER_SEPARATOR, 0, this.getListY()+this.getBrowserHeight(), 0.0F, 0.0F, this.width, 2, 32, 2);
+        guiGraphics.blit(//? if >= 1.21.6 {RenderPipelines.GUI_TEXTURED,//?} else if >=1.21.3 {/^RenderType::guiTextured, ^///?}Screen.HEADER_SEPARATOR, 0, this.getListY()+this.getBrowserHeight(), 0.0F, 0.0F, this.width, 2, 32, 2);
     }
+    *///?}
     @Override
     public void initGui()
     {
@@ -391,7 +407,7 @@ public class LucidityGuiConfigs extends GuiConfigsBase {
         public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton) {
         *///?}
             if (this.exportBtn != null && this.exportBtn.isMouseOver(mouseX, mouseY)) {
-                Screen screen = Minecraft.getInstance().screen;
+                Screen screen = Minecraft.getInstance().gui.screen();
                 if (screen instanceof GuiBase guiBase) {
                     exportTask.run();
                     guiBase.addMessage(Message.MessageType.SUCCESS, 400,
@@ -401,7 +417,7 @@ public class LucidityGuiConfigs extends GuiConfigsBase {
             }
             if (this.importBtn != null && this.importBtn.isMouseOver(mouseX, mouseY)) {
                 boolean s = importTask.apply(null);
-                Screen screen = Minecraft.getInstance().screen;
+                Screen screen = Minecraft.getInstance().gui.screen();
                 if (screen instanceof GuiBase guiBase) {
                     if(s){
                         guiBase.initGui();

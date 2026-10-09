@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.config.options.*;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 import ml.mypals.lucidity.Lucidity;
 import ml.mypals.lucidity.LucidityModInfo;
 import ml.mypals.lucidity.gui.LucidityGuiConfigs;

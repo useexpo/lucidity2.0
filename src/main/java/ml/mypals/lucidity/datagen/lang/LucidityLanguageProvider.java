@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.datagen.lang;
 
-import ml.mypals.lucidity.Lucidity;
+//? if <26.1 {
+/*import ml.mypals.lucidity.Lucidity;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
@@ -27,3 +28,4 @@ public class LucidityLanguageProvider extends FabricLanguageProvider {
         translations.forEach(translationBuilder::add);
     }
 }
+*///?}

@@ -1,12 +1,13 @@
 package ml.mypals.lucidity.mixin.features.visualizers.entityYaw;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+//? if <26.1 {
+/*import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import ml.mypals.lucidity.config.FeatureToggle;
 import net.minecraft.client.Minecraft;
 //? if >=1.21.5 {
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HitboxesRenderState;
 //?}
@@ -64,9 +65,9 @@ public abstract class EntityRendererMixin {
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.lines());
         float f = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks();
     //?} else {
-    /*@Inject(at = @At("HEAD"), method = "renderHitbox(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/entity/Entity;FFFF)V", cancellable = true)
+    /^@Inject(at = @At("HEAD"), method = "renderHitbox(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/entity/Entity;FFFF)V", cancellable = true)
     private static void renderHitbox(PoseStack poseStack, VertexConsumer vertexConsumer, Entity target, float f, float g, float h, float i, CallbackInfo ci) {
-    *///?}
+    ^///?}
         //? if >=1.21.5 {
         Entity target = targetEntity.get();
         //?}
@@ -76,11 +77,11 @@ public abstract class EntityRendererMixin {
 
             Entity entity = serverEntity != null ? serverEntity : target;
 
-            /*? if >=1.21.3 {*/ShapeRenderer./*?} else {*//*EntityRenderDispatcher.*//*?}*/renderVector(poseStack, vertexConsumer,
+            /^? if >=1.21.3 {^/ShapeRenderer./^?} else {^//^EntityRenderDispatcher.^//^?}^/renderVector(poseStack, vertexConsumer,
                     new Vector3f(0.0F, entity.getBbHeight()/2, 0.0F),
                     Vec3.directionFromRotation(0.0F, getPreciseEntityRotation(entity,f)).scale(2.5F), YROT_COLOR.getIntegerValue());
             if(entity instanceof LivingEntity livingEntity){
-                /*? if >=1.21.3 {*/ShapeRenderer./*?} else {*//*EntityRenderDispatcher.*//*?}*/renderVector(poseStack, vertexConsumer,
+                /^? if >=1.21.3 {^/ShapeRenderer./^?} else {^//^EntityRenderDispatcher.^//^?}^/renderVector(poseStack, vertexConsumer,
                         new Vector3f(0.0F, entity.getBbHeight()/2, 0.0F),
                         Vec3.directionFromRotation(0.0F, getPreciseEntityBodyRotation(livingEntity,f)).scale(3.0F), BODY_ROT_COLOR.getIntegerValue());
             }
@@ -92,6 +93,13 @@ public abstract class EntityRendererMixin {
     }
     @Unique
     private static float getPreciseEntityRotation(Entity entity,float f) {
-        return entity.getYRot(/*? if >=1.21.3 {*/f/*?}*/);
+        return entity.getYRot(/^? if >=1.21.3 {^/f/^?}^/);
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class EntityRendererMixin {}
+//?}

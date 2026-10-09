@@ -1,24 +1,25 @@
 package ml.mypals.lucidity.features.worldEaterHelper;
 
-import net.minecraft.client.Minecraft;
+//? if <26.1 {
+/*import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 //? if >=1.21.5 {
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.resources.model.QuadCollection;
 //?} else {
-/*import net.minecraft.client.resources.model.BakedModel;
+/^import net.minecraft.client.resources.model.BakedModel;
 import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 import java.util.function.Supplier;
 import java.util.ArrayList;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-*///?}
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+^///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +32,14 @@ import java.util.function.Predicate;
 //? if >=1.21.5 {
 public class ExtrudedBlockBakedModel implements BlockStateModel {
 //?} else {
-/*public class ExtrudedBlockBakedModel implements BakedModel {
-*///?}
+/^public class ExtrudedBlockBakedModel implements BakedModel {
+^///?}
 
     //? if >=1.21.5 {
     private final BlockStateModel base;
     //?} else {
-    /*private final BakedModel base;
-    *///?}
+    /^private final BakedModel base;
+    ^///?}
     private final float height;
     private final Quaternionf rotation;
 
@@ -46,8 +47,8 @@ public class ExtrudedBlockBakedModel implements BlockStateModel {
     public ExtrudedBlockBakedModel(BlockStateModel base, float height) {
     //?} else {
 
-    /*public ExtrudedBlockBakedModel(BakedModel base, float height) {
-    *///?}
+    /^public ExtrudedBlockBakedModel(BakedModel base, float height) {
+    ^///?}
         this.base = base;
         this.height = height;
         this.rotation = new Quaternionf()
@@ -140,11 +141,11 @@ public class ExtrudedBlockBakedModel implements BlockStateModel {
                 quad.direction(),
                 quad.sprite(),
                 false,
-                LightTexture.FULL_BRIGHT
+                net.minecraft.util.LightCoordsUtil.FULL_BRIGHT
         );
     }
     //?} else {
-    /*@Override
+    /^@Override
     public @NotNull List<BakedQuad> getQuads(
             @Nullable BlockState state,
             @Nullable Direction side,
@@ -197,7 +198,7 @@ public class ExtrudedBlockBakedModel implements BlockStateModel {
                 quad.getSprite(),
                 false
                 //? if >=1.21.3 {
-                , LightTexture.FULL_BRIGHT
+                , net.minecraft.util.LightCoordsUtil.FULL_BRIGHT
                 //?}
         );
     }
@@ -229,11 +230,11 @@ public class ExtrudedBlockBakedModel implements BlockStateModel {
     }
 
     //? if <=1.21.1 {
-    /^@Override
+    /^¹@Override
     public @NotNull ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
     }
-    ^///?}
+    ¹^///?}
 
     //? if >=1.21.4 {
     @Override
@@ -241,10 +242,13 @@ public class ExtrudedBlockBakedModel implements BlockStateModel {
         VanillaModelEncoder.emitBlockQuads(emitter, (BakedModel)this, state, randomSupplier, cullTest);
     }
     //?} else {
-    /^@Override
+    /^¹@Override
     public boolean isCustomRenderer() {
         return true;
     }
-    ^///?}
-    *///?}
+    ¹^///?}
 }
+//?} else {
+public class ExtrudedBlockBakedModel {}
+//?}
+*/

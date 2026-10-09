@@ -7,6 +7,7 @@ import ml.mypals.ryansrenderingkit.shape.Shape;
 import ml.mypals.ryansrenderingkit.shape.round.SphereShape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SculkShriekerBlockEntity;
@@ -26,7 +27,6 @@ import static ml.mypals.lucidity.features.visualizers.sculk.SculkVisualizerManag
 @Mixin(SculkShriekerBlockEntity.class)
 public abstract class SculkShriekerBlockTickerMixin extends BlockEntity implements ISculkSensorBlockEntity, GameEventListener.Provider<VibrationSystem.Listener>, VibrationSystem {
 
-
     @Unique
     SphereShape shape;
 
@@ -35,17 +35,17 @@ public abstract class SculkShriekerBlockTickerMixin extends BlockEntity implemen
     }
 
     public void lucidity_sculk_visualizer$custom_tick(){
-        if (FeatureToggle.SCULK_SENSOR_VISUALIZE.getBooleanValue() && isInValidRange(this.getBlockPos().getCenter()) && shape == null) {
+        if (FeatureToggle.SCULK_SENSOR_VISUALIZE.getBooleanValue() && isInValidRange(Vec3.atCenterOf(this.getBlockPos())) && shape == null) {
             shape = new SphereShape(
                     Shape.RenderingType.BATCH,
                     t -> {
-                        if(!isInValidRange(this.getBlockPos().getCenter()) || this.isRemoved() || !FeatureToggle.SCULK_SENSOR_VISUALIZE.getBooleanValue()){
+                        if(!isInValidRange(Vec3.atCenterOf(this.getBlockPos())) || this.isRemoved() || !FeatureToggle.SCULK_SENSOR_VISUALIZE.getBooleanValue()){
                             this.shape = null;
                             t.getShape().discard();
                         }
                         t.getShape().setBaseColor(c4f2C(SCULK_SENSOR_RANGE_COLOR.getColor()));
                     },
-                    this.getBlockPos().getCenter(),
+                    Vec3.atCenterOf(this.getBlockPos()),
                     SCULK_VISUALIZER_SEGMENTS,
                     this.getVibrationUser().getListenerRadius(),
                     new Color(84, 154, 172,100),

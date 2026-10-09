@@ -4,19 +4,18 @@ import ml.mypals.lucidity.utils.LucidityColorHelper;
 import ml.mypals.ryansrenderingkit.builders.vertexBuilders.VertexBuilder;
 import ml.mypals.ryansrenderingkit.shape.Shape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
-import net.caffeinemc.mods.sodium.client.render.frapi.helper.ColorHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 //? if >=1.21.5 {
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?} else {
 /*import net.minecraft.client.resources.model.BakedModel;
 *///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,7 +44,7 @@ public class ExplosionBlockPredicateShape extends Shape {
 
 
     public void submitSubShape(){
-        ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(this.id.getNamespace(), this.id.getPath() + "_rays"),subRayShape);
+        ShapeManagers.addShape(Identifier.fromNamespaceAndPath(this.id.getNamespace(), this.id.getPath() + "_rays"),subRayShape);
     }
 
     public void updateExplosionResult(MonitoredExplosion.ExplosionResult explosionResult){
@@ -92,15 +91,22 @@ public class ExplosionBlockPredicateShape extends Shape {
         }
     }
     public static List<Vec3> parseQuadToTriangles(BakedQuad quad,BlockPos pos) {
-        //? if >=1.21.5 {
+        //? if >=26.1 {
+        Vec3 v0 = new Vec3(quad.position0().x(), quad.position0().y(), quad.position0().z()).add(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 v1 = new Vec3(quad.position1().x(), quad.position1().y(), quad.position1().z()).add(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 v2 = new Vec3(quad.position2().x(), quad.position2().y(), quad.position2().z()).add(pos.getX(), pos.getY(), pos.getZ());
+        Vec3 v3 = new Vec3(quad.position3().x(), quad.position3().y(), quad.position3().z()).add(pos.getX(), pos.getY(), pos.getZ());
+        //?} else {
+        /*//? if >=1.21.5 {
         int[] vertices = quad.vertices();
         //?} else {
-        /*int[] vertices = quad.getVertices();
-        *///?}
+        /^int[] vertices = quad.getVertices();
+        ^///?}
         Vec3 v0 = extractVertexPosition(vertices, 0).add(pos.getX(),pos.getY(),pos.getZ());
         Vec3 v1 = extractVertexPosition(vertices, 1).add(pos.getX(),pos.getY(),pos.getZ());
         Vec3 v2 = extractVertexPosition(vertices, 2).add(pos.getX(),pos.getY(),pos.getZ());
         Vec3 v3 = extractVertexPosition(vertices, 3).add(pos.getX(),pos.getY(),pos.getZ());
+        *///?}
 
         List<Vec3> triangle1 = new ArrayList<>();
         triangle1.add(v0);
@@ -130,8 +136,26 @@ public class ExplosionBlockPredicateShape extends Shape {
 
         assert Minecraft.getInstance().level != null;
         Level level = Minecraft.getInstance().level;
-        //? if >=1.21.5 {
-        BlockStateModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+        //? if >=26.1 {
+        net.minecraft.client.renderer.block.dispatch.BlockStateModel blockModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(blockState);
+        List<net.minecraft.client.renderer.block.dispatch.BlockStateModelPart> parts = new ArrayList<>();
+        blockModel.collectParts(level.getRandom(), parts);
+        for(net.minecraft.client.renderer.block.dispatch.BlockStateModelPart blockModelPart : parts)
+        {
+            for (Direction direction:Direction.values()){
+                BlockPos relativePos = pos.relative(direction);
+                if(!affects.containsKey(relativePos) || Block.shouldRenderFace(blockState,level.getBlockState(relativePos),direction)){
+                    for(BakedQuad quad : blockModelPart.getQuads(direction)){
+                        vertices.addAll(parseQuadToTriangles(quad,pos));
+                    }
+                    for(BakedQuad quad : blockModelPart.getQuads(null)){
+                        vertices.addAll(parseQuadToTriangles(quad,pos));
+                    }
+                }
+            }
+        }
+        //?} else if >=1.21.5 {
+        /*BlockStateModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         for(BlockModelPart blockModelPart : blockModel.collectParts(level.getRandom()))
         {
             for (Direction direction:Direction.values()){
@@ -146,8 +170,7 @@ public class ExplosionBlockPredicateShape extends Shape {
                 }
             }
         }
-
-        //?} else {
+        *///?} else {
         /*BakedModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
         for (Direction direction:Direction.values()){
             BlockPos relativePos = pos.relative(direction);
@@ -192,7 +215,7 @@ public class ExplosionBlockPredicateShape extends Shape {
     }
     private void drawCenter(VertexBuilder builder,float deltaTick) {
         List<Vec3> facingTriangle = createPlayerFacingTriangle(explosionResult.getCenter(deltaTick),
-                Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(),0.1f);
+                Minecraft.getInstance().gameRenderer.mainCamera().position(),0.1f);
         builder.putColor(EXPLOSION_CENTER_COLOR.getColor().intValue);
         for (Vec3 vertex : facingTriangle) {
             builder.putVertex(vertex);
@@ -206,7 +229,7 @@ public class ExplosionBlockPredicateShape extends Shape {
             Vec3 pos = data.offsetFromCenter().reverse().add(vec3);
             if(vec3.distanceTo(pos)>0.1){
                 List<Vec3> facingTriangle = createPlayerFacingTriangle(pos,
-                        Minecraft.getInstance().gameRenderer.getMainCamera().getPosition(),0.03f);
+                        Minecraft.getInstance().gameRenderer.mainCamera().position(),0.03f);
 
                 float alpha = (data.strength() / explosionResult.maxPower())*255*2;
 
@@ -232,7 +255,7 @@ public class ExplosionBlockPredicateShape extends Shape {
     }
 
     private void drawEntitySamples(VertexBuilder builder,float deltaTick) {
-        Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Vec3 camPos = Minecraft.getInstance().gameRenderer.mainCamera().position();
 
 
         explosionSamples.clear();

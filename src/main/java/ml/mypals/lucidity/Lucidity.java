@@ -8,11 +8,14 @@ import ml.mypals.lucidity.features.selectiveRendering.WandTooltipRenderer;
 import ml.mypals.lucidity.features.tisMicroTiminghighlight.MicrotimingKeyWorldTracker;
 import ml.mypals.lucidity.features.visualizers.VisualizerManager;
 import ml.mypals.lucidity.features.visualizers.explosion.ExplosionSimulatorManager;
-import ml.mypals.lucidity.features.visualizers.fluidSource.FluidSourceResourceLoader;
+//? if <26.1 {
+/*import ml.mypals.lucidity.features.visualizers.fluidSource.FluidSourceResourceLoader;
+*///?}
 import ml.mypals.lucidity.features.visualizers.soundVisualize.SoundListener;
 import ml.mypals.lucidity.features.worldEaterHelper.WorldEaterHelperManager;
 import ml.mypals.lucidity.init.LucidityInit;
 import ml.mypals.lucidity.features.netherPosCaculator.NetherPosCaculatorManager;
+import net.minecraft.client.Minecraft;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 //? if >=1.21.6 {
@@ -35,9 +38,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class Lucidity implements ModInitializer {
         registerVanillaKeyBindings();
         //? if >=1.21.6 {
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,
-                ResourceLocation.fromNamespaceAndPath(MOD_ID,"selective_rendering_hud"),
+                Identifier.fromNamespaceAndPath(MOD_ID,"selective_rendering_hud"),
                 (guiGraphics,deltaTracker)->{
                     WandTooltipRenderer.renderWandTooltip(guiGraphics);
                 });
@@ -68,12 +69,12 @@ public class Lucidity implements ModInitializer {
         /*HudLayerRegistrationCallback.EVENT.register((wrapper) -> {
             wrapper.addLayer(new IdentifiedLayer() {
                 @Override
-                public ResourceLocation id() {
-                    return ResourceLocation.fromNamespaceAndPath(MOD_ID,"selective_rendering_hud");
+                public Identifier id() {
+                    return Identifier.fromNamespaceAndPath(MOD_ID,"selective_rendering_hud");
                 }
 
                 @Override
-                public void render(@NotNull GuiGraphics guiGraphics, @NotNull DeltaTracker deltaTracker) {
+                public void render(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull DeltaTracker deltaTracker) {
                     WandTooltipRenderer.renderWandTooltip(guiGraphics);
                 }
             });
@@ -85,7 +86,7 @@ public class Lucidity implements ModInitializer {
         *///?}
         FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
             ResourceManagerHelper.registerBuiltinResourcePack(
-                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "lavahighlight"),
+                    Identifier.fromNamespaceAndPath(MOD_ID, "lavahighlight"),
                     container,
                     ResourcePackActivationType.NORMAL
             );
@@ -122,7 +123,9 @@ public class Lucidity implements ModInitializer {
             return InteractionResult.PASS;
         });
 
-        FluidSourceResourceLoader.init();
+        //? if <26.1 {
+        /*FluidSourceResourceLoader.init();
+        *///?}
     }
     public static void onConfigLoaded(){
         SelectiveRenderingManager.resolveSelectedAreasFromString(SELECTED_AREAS.getStrings());

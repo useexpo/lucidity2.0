@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.vanilla;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -9,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -101,7 +102,7 @@ public class FluidRendererMixin {
         return original.call(side, f, neighborState);
     }
     //?} else {
-    /*@WrapOperation(
+    /^@WrapOperation(
             method = "tesselate",
             at = @At(
                     value = "INVOKE",
@@ -151,5 +152,13 @@ public class FluidRendererMixin {
         }
         return original.call(blockGetter, side, f, pos, neighborState);
     }
-    *///?}
+    ^///?}
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class FluidRendererMixin {
+}
+//?}

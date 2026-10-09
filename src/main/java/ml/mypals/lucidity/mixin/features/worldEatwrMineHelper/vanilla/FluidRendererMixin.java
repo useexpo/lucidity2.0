@@ -1,5 +1,6 @@
 package ml.mypals.lucidity.mixin.features.worldEatwrMineHelper.vanilla;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,7 +12,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -36,7 +37,7 @@ public abstract class FluidRendererMixin {
     value = "INVOKE"))
     public int tesselate(LiquidBlockRenderer instance, BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, Operation<Integer> original){
 
-        return isRenderingTransformed.get() ? LightTexture.FULL_BRIGHT:original.call(instance,blockAndTintGetter,blockPos);
+        return isRenderingTransformed.get() ? net.minecraft.util.LightCoordsUtil.FULL_BRIGHT:original.call(instance,blockAndTintGetter,blockPos);
     }
     @WrapMethod(method = "tesselate(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/FluidState;)V")
     public void tesselateAdditional(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, Operation<Void> original) {
@@ -113,7 +114,7 @@ public abstract class FluidRendererMixin {
         return !isRenderingTransformed.get() && original.call(side, f, neighborState);
     }
     //?} else {
-    /*@WrapMethod(method = "shouldRenderFace(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)Z")
+    /^@WrapMethod(method = "shouldRenderFace(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)Z")
     private static boolean redirectShouldRenderFace(
             BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, FluidState fluidState, BlockState blockState, Direction direction, FluidState fluidState2, Operation<Boolean> original
     ) {
@@ -126,5 +127,13 @@ public abstract class FluidRendererMixin {
     ) {
         return !isRenderingTransformed.get() && original.call(blockGetter, direction, f, blockPos, blockState);
     }
-    *///?}
+    ^///?}
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class FluidRendererMixin {
+}
+//?}

@@ -9,7 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class LucidityLanguageProviderManager {
+//? if <26.1 {
+/*public class LucidityLanguageProviderManager {
     private LinkedHashMap<String,Map<String,String>> translations = new LinkedHashMap<>();
     private CompletableFuture<HolderLookup.Provider> registries;
     public LucidityLanguageProviderManager(CompletableFuture<HolderLookup.Provider> registriesFuture){
@@ -40,3 +41,4 @@ public class LucidityLanguageProviderManager {
         );
     }
 }
+*///?}

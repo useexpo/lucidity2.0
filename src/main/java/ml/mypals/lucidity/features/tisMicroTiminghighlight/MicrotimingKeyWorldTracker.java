@@ -9,7 +9,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,7 +76,7 @@ public class MicrotimingKeyWorldTracker {
 
     public static void updateActorPos(Vec3 vec3, DyeColor dyeColor, MicroTimingAnalyzer.ParentInfo parentInfo) {
         if (!registered) {
-            ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID, "microtiming_cator"), actorPosMarker);
+            ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID, "microtiming_cator"), actorPosMarker);
         }
         if (!actorPosMarker.enabled()) {
             actorPosMarker.enable();
@@ -172,8 +172,8 @@ public class MicrotimingKeyWorldTracker {
     public static void start() {
         actorPosMarker.disable();
         actorParentPosMarker.disable();
-        ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID, "microtiming_cator"), actorPosMarker);
-        ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID, "microtiming_cator_parent"),
+        ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID, "microtiming_cator"), actorPosMarker);
+        ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID, "microtiming_cator_parent"),
                 actorParentPosMarker);
         registered = true;
     }

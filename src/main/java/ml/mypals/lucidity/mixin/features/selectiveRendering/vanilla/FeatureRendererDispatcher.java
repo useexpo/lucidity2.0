@@ -1,12 +1,12 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.vanilla;
 
-import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingSubmitNodeStorage;
+//? if >=1.21.9 && <26.1 {
+/*import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingSubmitNodeStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-//? if >=1.21.9 {
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import ml.mypals.lucidity.features.selectiveRendering.ControllableTransparentBuffersWrapper;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = FeatureRenderDispatcher.class)
 public class FeatureRendererDispatcher {
 
-    /* modelFeatureRenderer */
+    /^ modelFeatureRenderer ^/
 
     @Shadow @Final private SubmitNodeStorage submitNodeStorage;
 
@@ -35,7 +35,7 @@ public class FeatureRendererDispatcher {
         original.call(instance, submitNodeCollection, new ControllableTransparentBuffersWrapper(bufferSource), outlineBufferSource, new ControllableTransparentBuffersWrapper(bufferSource2));
     }
 
-    /* modelPartFeatureRenderer */
+    /^ modelPartFeatureRenderer ^/
 
     @WrapOperation(
             method = "renderAllFeatures",
@@ -50,7 +50,7 @@ public class FeatureRendererDispatcher {
         original.call(instance, submitNodeCollection, new ControllableTransparentBuffersWrapper(bufferSource), outlineBufferSource, new ControllableTransparentBuffersWrapper(bufferSource2));
     }
 
-    /* itemFeatureRenderer */
+    /^ itemFeatureRenderer ^/
 
     @WrapOperation(
             method = "renderAllFeatures",
@@ -65,7 +65,7 @@ public class FeatureRendererDispatcher {
         original.call(instance, submitNodeCollection, new ControllableTransparentBuffersWrapper(bufferSource), outlineBufferSource);
     }
 
-    /* customFeatureRenderer */
+    /^ customFeatureRenderer ^/
 
     @WrapOperation(
             method = "renderAllFeatures",
@@ -96,8 +96,11 @@ public class FeatureRendererDispatcher {
         original.call(instance, submitNodeCollection, new ControllableTransparentBuffersWrapper(bufferSource), blockRenderDispatcher, outlineBufferSource);
     }
 }
-//?} else {
-/*@Mixin(Minecraft.class)
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
 public class FeatureRendererDispatcher {
 }
-*///?}
+//?}

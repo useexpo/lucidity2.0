@@ -1,7 +1,8 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.sodium;
 
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager;
@@ -18,7 +19,7 @@ import net.caffeinemc.mods.sodium.client.world.LevelSlice;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Final;
@@ -114,3 +115,11 @@ public class DefaultFluidRendererMixin {
 
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class DefaultFluidRendererMixin {
+}
+//?}

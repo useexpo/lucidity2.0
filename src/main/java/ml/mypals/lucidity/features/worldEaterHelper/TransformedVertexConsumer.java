@@ -54,4 +54,23 @@ public class TransformedVertexConsumer implements VertexConsumer {
         normal.normalize();
         return delegate.setNormal(normal.x, normal.y, normal.z);
     }
+
+    //? if >=26.1 {
+    @Override
+    public @NotNull VertexConsumer setLineWidth(float width) {
+        delegate.setLineWidth(width);
+        return this;
+    }
+
+    @Override
+    public @NotNull VertexConsumer setUv3(float u, float v) {
+        delegate.setUv3(u, v);
+        return this;
+    }
+
+    @Override
+    public @NotNull VertexConsumer setColor(int color) {
+        return delegate.setColor(color);
+    }
+    //?}
 }

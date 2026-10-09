@@ -1,7 +1,7 @@
 package ml.mypals.lucidity.mixin.features.worldEatwrMineHelper.sodium;
 
-
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.joml.Matrix4f;
@@ -80,7 +80,7 @@ public class DefaultFluidRendererMixin {
         if (isRenderingTransformed.get()) {
             QuadLightData lightData = this.quadLightData;
             for (int i = 0; i < 4; i++) {
-                lightData.lm[i] = LightTexture.FULL_BRIGHT;
+                lightData.lm[i] = net.minecraft.util.LightCoordsUtil.FULL_BRIGHT;
             }
         }
     }
@@ -167,3 +167,11 @@ public class DefaultFluidRendererMixin {
         return !isRenderingTransformed.get() && original.call(world, pos, dir, blockState, fluid);
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class DefaultFluidRendererMixin {
+}
+//?}

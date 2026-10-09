@@ -2,13 +2,15 @@ package ml.mypals.lucidity.mixin.features.visualizers.vaultItemDisplay;
 
 //? if >=1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.blockentity.state.SpawnerRenderState;
 //?}
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <1.21.9 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
 import net.minecraft.client.renderer.blockentity.TrialSpawnerRenderer;
 import net.minecraft.client.renderer.blockentity.VaultRenderer;
@@ -42,8 +44,8 @@ public class TrialSpawnerBlockEntityRendererMixin {
 
 
     //? if >=1.21.9 {
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/SpawnerRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
-            at = @At(target = "Lnet/minecraft/client/renderer/blockentity/SpawnerRenderer;submitEntityInSpawner(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;FFLnet/minecraft/client/renderer/state/CameraRenderState;)V",
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/SpawnerRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
+            at = @At(target = "Lnet/minecraft/client/renderer/blockentity/SpawnerRenderer;submitEntityInSpawner(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;FFLnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
                     value = "INVOKE",
                     shift = At.Shift.AFTER
             ))

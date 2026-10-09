@@ -5,7 +5,8 @@ import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
 
-public class LucidityLanguageGenerator {
+//? if <26.1 {
+/*public class LucidityLanguageGenerator {
     public LucidityLanguageProviderManager languageProviderManager;
     private CompletableFuture<HolderLookup.Provider> registries;
     public LucidityLanguageGenerator(CompletableFuture<HolderLookup.Provider> registries) {
@@ -868,3 +869,4 @@ public class LucidityLanguageGenerator {
         languageProviderManager.submit(pack);
     }
 }
+*///?}

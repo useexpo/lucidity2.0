@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -102,17 +102,34 @@ public class WandActionsManager {
             return this;
         }
     }
+
+    private static void swingPlayer(Player player, InteractionHand hand) {
+        //? if >=26.1 {
+        player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, false);
+        //?} else {
+        /*player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, false);
+        *///?}
+    }
+
+    private static void sendMessage(Player player, Component msg) {
+        //? if >=26.1 {
+        player.sendOverlayMessage(msg);
+        //?} else {
+        /*player.displayClientMessage(msg, true);
+        *///?}
+    }
+
     public static void selectingAction(BlockPos pos, InteractionHand hand, Player player, Boolean isFirstPoint) {
         if (isFirstPoint) {
             pos1 = pos;
-            player.swing(hand);
+            swingPlayer(player, hand);
             player.playSound(SoundEvents.CHAIN_PLACE);
             if(pos1 != null){
                 player.playSound(SoundEvents.CHAIN_PLACE);
             }
         } else{
             pos2 = pos;
-            player.swing(hand);
+            swingPlayer(player, hand);
             player.playSound(SoundEvents.CHAIN_PLACE);
             if(pos2 != null){
                 player.playSound(SoundEvents.CHAIN_PLACE);
@@ -127,7 +144,7 @@ public class WandActionsManager {
             pos2 = null;
             player.playSound(SoundEvents.RESPAWN_ANCHOR_SET_SPAWN);
         }else{
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.cant_add_area").getString()), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.cant_add_area").getString()));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }
     }
@@ -156,7 +173,7 @@ public class WandActionsManager {
             pos2 = null;
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }else{
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.cant_add_area").getString()), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.cant_add_area").getString()));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }
     }
@@ -166,28 +183,28 @@ public class WandActionsManager {
         if(world.getBlockState(pos).getBlock() == Blocks.AIR ){return;}
         if (!SELECTED_BLOCKS.getStrings().contains(id)) {
             addToConfigList(SELECTED_BLOCKS,id);
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.add_type").getString() + id), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.add_type").getString() + id));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_CHARGE);
         } else {
             removeFromConfigList(SELECTED_BLOCKS,id);
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.removed_type").getString() + id), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.removed_type").getString() + id));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }
-        player.swing(hand);
+        swingPlayer(player, hand);
     }
     public static void selectEntityTypeAction(Entity target, InteractionHand hand, Player player, Level world) {
         if(target == null ){return;}
         String id = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
         if (!SELECTED_ENTITIES.getStrings().contains(id)) {
             addToConfigList(SELECTED_ENTITIES,id);
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.add_type").getString() + id), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.add_type").getString() + id));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_CHARGE);
         } else {
             removeFromConfigList(SELECTED_ENTITIES,id);
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.removed_type").getString() + id), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.removed_type").getString() + id));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }
-        player.swing(hand);
+        swingPlayer(player, hand);
     }
     public static void switchRenderMod(boolean increase){
         if(selectCoolDown > 0){return;}
@@ -212,7 +229,7 @@ public class WandActionsManager {
         if((pos1 != null || pos2 != null)) {
             pos1 = null;
             pos2 = null;
-            player.displayClientMessage(Component.literal(Component.translatable("lucidity.info.clear").getString()), true);
+            sendMessage(player, Component.literal(Component.translatable("lucidity.info.clear").getString()));
             player.playSound(SoundEvents.RESPAWN_ANCHOR_DEPLETE.value());
         }
     }
@@ -263,12 +280,12 @@ public class WandActionsManager {
 
                 if(client.options.keyUse.isDown()){
                     getAreasToDelete(pointingPos,true);
-                    client.player.swing(mainHand);
+                    swingPlayer(client.player, mainHand);
                 }
                 else if (pos1 != null && pos2 != null && client.options.keyAttack.isDown()) {
                     cutAreaAction(client.player);
                     selectCoolDown = SELECT_COOLDOWN;
-                    client.player.swing(mainHand);
+                    swingPlayer(client.player, mainHand);
                 }
             } else if (client.options.keyAttack.isDown()) {
                 if (client.options.keyShift.isDown()) {
@@ -341,11 +358,11 @@ public class WandActionsManager {
 
                         BoxFaceShape shape = (BoxFaceShape) boxTransformer.getShape();
                         shape.forceSetDimensions(new Vec3(1,1,1));
-                        shape.setWorldPosition(lookAt.getCenter());
+                        shape.setWorldPosition(Vec3.atCenterOf(lookAt));
                     })
                     .build(Shape.RenderingType.BATCH);
             ShapeManagers.addShape(
-                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "selective_rendering_info_box_solid"),
+                    Identifier.fromNamespaceAndPath(MOD_ID, "selective_rendering_info_box_solid"),
                     pointing
             );
         }
@@ -383,7 +400,7 @@ public class WandActionsManager {
 
                     if (pos1 == null && pos2 == null) {
                         shape.forceSetDimensions(new Vec3(1,1,1));
-                        shape.setWorldPosition(lookAt.getCenter());
+                        shape.setWorldPosition(Vec3.atCenterOf(lookAt));
                         return;
                     }
 
@@ -400,7 +417,7 @@ public class WandActionsManager {
                 })
                 .build(Shape.RenderingType.BATCH);
         ShapeManagers.addShape(
-                ResourceLocation.fromNamespaceAndPath(MOD_ID, "selective_rendering_info_box"),
+                Identifier.fromNamespaceAndPath(MOD_ID, "selective_rendering_info_box"),
                 infoBox
         );
     }

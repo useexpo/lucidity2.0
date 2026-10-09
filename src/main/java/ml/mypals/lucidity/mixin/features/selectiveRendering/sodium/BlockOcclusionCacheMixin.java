@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.sodium;
 
-import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
+//? if <26.1 {
+/*import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,3 +32,11 @@ public class BlockOcclusionCacheMixin {
         }
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class BlockOcclusionCacheMixin {
+}
+//?}

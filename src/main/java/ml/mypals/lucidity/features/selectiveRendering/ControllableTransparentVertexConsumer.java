@@ -47,4 +47,25 @@ public class ControllableTransparentVertexConsumer implements VertexConsumer {
         base.setNormal(f,g,h);
         return this;
     }
+
+    //? if >=26.1 {
+    @Override
+    public @NotNull VertexConsumer setLineWidth(float width) {
+        base.setLineWidth(width);
+        return this;
+    }
+
+    @Override
+    public @NotNull VertexConsumer setUv3(float u, float v) {
+        base.setUv3(u, v);
+        return this;
+    }
+
+    @Override
+    public @NotNull VertexConsumer setColor(int color) {
+        int a = HIDDEN_BLOCK_TRANSPARENCY.getIntegerValue();
+        base.setColor((color & 0x00FFFFFF) | (a << 24));
+        return this;
+    }
+    //?}
 }

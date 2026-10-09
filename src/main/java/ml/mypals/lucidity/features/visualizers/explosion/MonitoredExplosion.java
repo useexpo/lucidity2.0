@@ -139,7 +139,7 @@ public class MonitoredExplosion implements Explosion {
     @Override
     public boolean shouldAffectBlocklikeEntities() {
         boolean bl2 = this.source == null || !this.source.isInWater();
-        boolean bl3 = this.source == null || this.source.getType() != EntityType.BREEZE_WIND_CHARGE && this.source.getType() != EntityType.WIND_CHARGE;
+        boolean bl3 = this.source == null || this.source.getType() != net.minecraft.world.entity.EntityTypes.BREEZE_WIND_CHARGE && this.source.getType() != net.minecraft.world.entity.EntityTypes.WIND_CHARGE;
         return this.blockInteraction.shouldAffectBlocklikeEntities() && bl2 && bl3;
     }
     //?}

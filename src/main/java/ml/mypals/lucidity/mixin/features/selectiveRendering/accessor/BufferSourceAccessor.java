@@ -1,8 +1,9 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.accessor;
 
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+//? if <26.1 {
+/*import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -15,3 +16,11 @@ public interface BufferSourceAccessor {
     @Accessor("fixedBuffers")
     SequencedMap<RenderType, ByteBufferBuilder> lucidity$getFixedBuffers();
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public interface BufferSourceAccessor {
+}
+//?}

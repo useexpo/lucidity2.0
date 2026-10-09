@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.mixin.features.selectiveRendering.sodium;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+//? if <26.1 {
+/*import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager;
@@ -10,19 +11,19 @@ import net.caffeinemc.mods.sodium.client.render.frapi.render.NonTerrainBlockRend
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 //?} else {
-/*import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-*///?}
+/^import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+^///?}
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.MultiBufferSource;
 //? if >=1.21.5 {
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?}
 //? if <1.21.5 {
-/*import net.minecraft.client.resources.model.BakedModel;
-*///?}
+/^import net.minecraft.client.resources.model.BakedModel;
+^///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,8 +38,8 @@ public abstract class NonTerrainBlockRenderContextMixin {
     //? if >=1.21.6 {
     @Shadow protected abstract VertexConsumer getVertexConsumer(ChunkSectionLayer par1);
     //?} else if >= 1.21.5 {
-    /*@Shadow protected abstract VertexConsumer getVertexConsumer(BlendMode par1);
-    *///?} else {
+    /^@Shadow protected abstract VertexConsumer getVertexConsumer(BlendMode par1);
+    ^///?} else {
     //?}
     @Unique
     private int alpha;
@@ -48,10 +49,10 @@ public abstract class NonTerrainBlockRenderContextMixin {
     
     private void onRenderModel(BlockAndTintGetter blockView, BlockColors blockColors, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockVertexConsumerProvider buffer, boolean cull, long seed, int overlay, CallbackInfo ci) {
     //?} else if >= 1.21.5 {
-    /*private void onRenderModel(BlockAndTintGetter blockView, BlockColors blockColors, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, MultiBufferSource buffer, boolean cull, long seed, int overlay, CallbackInfo ci) {
-    *///?} else {
-    /*private void onRenderModel(BlockAndTintGetter blockView, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer buffer, boolean cull, RandomSource random, long seed, int overlay, CallbackInfo ci) {
-    *///?}
+    /^private void onRenderModel(BlockAndTintGetter blockView, BlockColors blockColors, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, MultiBufferSource buffer, boolean cull, long seed, int overlay, CallbackInfo ci) {
+    ^///?} else {
+    /^private void onRenderModel(BlockAndTintGetter blockView, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack, VertexConsumer buffer, boolean cull, RandomSource random, long seed, int overlay, CallbackInfo ci) {
+    ^///?}
         alpha = SelectiveRenderingManager.shouldRenderBlock(state,pos)?-1: SelectiveRenderingConfigs.HIDDEN_BLOCK_TRANSPARENCY.getIntegerValue();
         if (alpha == 0) {
             ci.cancel();
@@ -62,8 +63,8 @@ public abstract class NonTerrainBlockRenderContextMixin {
     //? if >=1.21.5 {
     private void onBufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer, CallbackInfo ci) {
     //?} else {
-    /*private void onBufferQuad(MutableQuadViewImpl quad, CallbackInfo ci) {
-    *///?}
+    /^private void onBufferQuad(MutableQuadViewImpl quad, CallbackInfo ci) {
+    ^///?}
         if (alpha > -1) {
             for (int i = 0; i < 4; i++) {
                 int color = quad.getColor(i);
@@ -78,10 +79,18 @@ public abstract class NonTerrainBlockRenderContextMixin {
             //? if >=1.21.6 {
             return this.getVertexConsumer(ChunkSectionLayer.TRANSLUCENT);
             //?} else {
-            /*return this.getVertexConsumer(BlendMode.TRANSLUCENT);
-            *///?}
+            /^return this.getVertexConsumer(BlendMode.TRANSLUCENT);
+            ^///?}
         }
         return par2;
     }
     //?}
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class NonTerrainBlockRenderContextMixin {
+}
+//?}

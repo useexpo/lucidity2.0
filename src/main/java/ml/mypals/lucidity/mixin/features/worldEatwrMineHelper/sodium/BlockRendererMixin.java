@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.mixin.features.worldEatwrMineHelper.sodium;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,13 +20,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 //? if >=1.21.5 {
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.QuadCollection;
 //?} else {
-/*import net.minecraft.client.resources.model.BakedModel;
+/^import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.SimpleBakedModel;
-*///?}
+^///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix4f;
@@ -59,7 +60,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
                 this.quadLightData.br[i] = 1.0f;
             }
             for (int i = 0; i < 4; i++) {
-                this.quadLightData.lm[i] = LightTexture.FULL_BRIGHT;
+                this.quadLightData.lm[i] = net.minecraft.util.LightCoordsUtil.FULL_BRIGHT;
             }
         }
     }
@@ -71,7 +72,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
             ChunkVertexEncoder.Vertex[] vertices = this.vertices;
             for (int dstIndex = 0; dstIndex < 4; ++dstIndex) {
                 ChunkVertexEncoder.Vertex out = vertices[dstIndex];
-                out.light = LightTexture.FULL_BRIGHT;
+                out.light = net.minecraft.util.LightCoordsUtil.FULL_BRIGHT;
             }
         }
     }
@@ -103,10 +104,10 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         original.call(model, state, pos, origin);
 
     //?} else {
-    /*private void onRenderModel(BakedModel model, BlockState state, BlockPos pos, BlockPos origin, Operation<Void> original) {
+    /^private void onRenderModel(BakedModel model, BlockState state, BlockPos pos, BlockPos origin, Operation<Void> original) {
 
         original.call(model, state, pos, origin);
-    *///?}
+    ^///?}
         if (!isRenderingTransformed.get() &&
                 WORLD_EATER_MINE_HELPER.getBooleanValue() &&
                 WorldEaterHelperManager.shouldRender(state, pos)) {
@@ -145,3 +146,11 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         }
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class BlockRendererMixin {
+}
+//?}

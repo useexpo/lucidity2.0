@@ -1,7 +1,8 @@
 package ml.mypals.lucidity.mixin.features.tisMicroTimingHighlight;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+//? if <26.1 {
+/*import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -18,7 +19,7 @@ import static ml.mypals.lucidity.features.tisMicroTiminghighlight.MicroTimingAna
 import static ml.mypals.lucidity.features.tisMicroTiminghighlight.MicrotimingKeyWorldTracker.*;
 
 
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsMixin {
 
     @Inject(method = "renderComponentHoverEffect",at =@At("HEAD"))
@@ -31,10 +32,10 @@ public abstract class GuiGraphicsMixin {
                 Component component = showText.value();
             //?} else {
             
-            /*if (hoverEvent != null && hoverEvent.getAction() == HoverEvent.Action.SHOW_TEXT) {
+            /^if (hoverEvent != null && hoverEvent.getAction() == HoverEvent.Action.SHOW_TEXT) {
                 Component component = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
              
-            *///?}
+            ^///?}
                 if (component != null) {
                     String content = component.getString();
 
@@ -48,8 +49,8 @@ public abstract class GuiGraphicsMixin {
                                 ClickEvent.CopyToClipboard copyToClipboard = (ClickEvent.CopyToClipboard)clickEvent;
                                 updateActorPos(vec3,dyeColor,decodeParentHidden(copyToClipboard.value()));
                                 //?} else {
-                                    /*updateActorPos(vec3,dyeColor,decodeParentHidden(clickEvent.getValue()));
-                                *///?}
+                                    /^updateActorPos(vec3,dyeColor,decodeParentHidden(clickEvent.getValue()));
+                                ^///?}
                             } else {
                                     updateActorPos(vec3, dyeColor, null);
                             }
@@ -61,3 +62,11 @@ public abstract class GuiGraphicsMixin {
         }
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class GuiGraphicsMixin {
+}
+//?}

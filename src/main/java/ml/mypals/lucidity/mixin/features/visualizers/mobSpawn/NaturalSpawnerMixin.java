@@ -8,7 +8,7 @@ import ml.mypals.ryansrenderingkit.shape.line.StripLineShape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -141,7 +141,7 @@ public abstract class NaturalSpawnerMixin {
             List<Color> generated = new ArrayList<>();
 
 
-            ChunkPos chunkPos = new ChunkPos(trace.initial);
+            ChunkPos chunkPos = net.minecraft.world.level.ChunkPos.containing(trace.initial);
             Level level = mob.level();
 
             //? if >=1.21.3 {
@@ -157,24 +157,24 @@ public abstract class NaturalSpawnerMixin {
             BlockPos p3 = new BlockPos(trace.initial.getX(), levelMinY, trace.initial.getZ());
             BlockPos p4 = trace.initial;
 
-            pathPoints.add(minPos.getCenter());
-            pathPoints.add(p2.getCenter());
-            pathPoints.add(p3.getCenter());
-            pathPoints.add(p4.getCenter());
+            pathPoints.add(Vec3.atCenterOf(minPos));
+            pathPoints.add(Vec3.atCenterOf(p2));
+            pathPoints.add(Vec3.atCenterOf(p3));
+            pathPoints.add(Vec3.atCenterOf(p4));
 
             generated.add(Color.GRAY);
             generated.add(Color.RED);
             generated.add(Color.BLUE);
             generated.add(Color.GREEN);
 
-            pathPoints.add(trace.initial.getCenter());
+            pathPoints.add(Vec3.atCenterOf(trace.initial));
             generated.add(Color.red);
             for (var step : trace.steps) {
-                pathPoints.add(step.pos().getCenter());
+                pathPoints.add(Vec3.atCenterOf(step.pos()));
                 if(step.pos().equals(spawnedAt))generated.add(Color.WHITE);
                 else generated.add(Color.GRAY);
             }
-            pathPoints.add(spawnedAt.getBottomCenter());
+            pathPoints.add(Vec3.atBottomCenterOf(spawnedAt));
 
             StripLineShape path =
                     ShapeGenerator.generateStripLine()
@@ -205,7 +205,7 @@ public abstract class NaturalSpawnerMixin {
                .build(Shape.RenderingType.BATCH);
 
             ShapeManagers.addShape(
-                    ResourceLocation.fromNamespaceAndPath(
+                    Identifier.fromNamespaceAndPath(
                             MOD_ID,"mob_spawn_trace/" + trace.toString().toLowerCase().replace("@","_")
                     ),path
             );

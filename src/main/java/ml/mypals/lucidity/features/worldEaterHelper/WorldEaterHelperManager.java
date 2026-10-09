@@ -4,7 +4,7 @@ import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager;
 import ml.mypals.lucidity.utils.BlockMatchRule;
 import net.minecraft.client.Minecraft;
 //? if >=1.21.5 {
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?} else {
 /*import net.minecraft.client.resources.model.BakedModel;
 *///?}
@@ -27,28 +27,38 @@ public class WorldEaterHelperManager {
 
     private static final CopyOnWriteArrayList<BlockMatchRule> RULES = new CopyOnWriteArrayList<>();
 
-//? if >=1.21.5 {
-    private static final Map<BlockStateModel, ExtrudedBlockBakedModel> CACHE = new IdentityHashMap<>();
+//? if >=26.1 {
     public static BlockStateModel getExtruded(BlockStateModel base) {
-
-//?} else {
-    /*private static final Map<BakedModel, ExtrudedBlockBakedModel> CACHE = new IdentityHashMap<>();
-    public static BakedModel getExtruded(BakedModel base) {
-*///?}
+        return base;
+    }
+//?} else if >=1.21.5 {
+/*  private static final Map<BlockStateModel, ExtrudedBlockBakedModel> CACHE = new IdentityHashMap<>();
+    public static BlockStateModel getExtruded(BlockStateModel base) {
         return CACHE.computeIfAbsent(
                 base,
                 b -> new ExtrudedBlockBakedModel(b, WORLD_EATER_MINE_HELPER_HEIGHT.getFloatValue())
         );
     }
+*///?} else {
+    /*private static final Map<BakedModel, ExtrudedBlockBakedModel> CACHE = new IdentityHashMap<>();
+    public static BakedModel getExtruded(BakedModel base) {
+        return CACHE.computeIfAbsent(
+                base,
+                b -> new ExtrudedBlockBakedModel(b, WORLD_EATER_MINE_HELPER_HEIGHT.getFloatValue())
+        );
+    }
+    *///?}
 
     public static void invalidateCaches() {
-        CACHE.clear();
+        //? if <26.1 {
+        /*CACHE.clear();
+        *///?}
     }
 
     public static void refresh() {
         invalidateCaches();
         resolveTargetBlocksFromString(WORLD_EATER_MINE_HELPER_TARGETS.getStrings());
-        Minecraft.getInstance().levelRenderer.allChanged();
+        Minecraft.getInstance().levelExtractor.allChanged();
     }
 
     public static void resolveTargetBlocksFromString(List<String> blockStrings) {

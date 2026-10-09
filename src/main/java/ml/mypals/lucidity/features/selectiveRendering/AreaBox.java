@@ -12,7 +12,8 @@ import ml.mypals.ryansrenderingkit.shape.box.WireframedBoxShape;
 import ml.mypals.ryansrenderingkit.shapeManagers.ShapeManagers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.Identifier;
 
 import java.awt.*;
 
@@ -48,13 +49,13 @@ public class AreaBox{
         this.alpha = alpha;
         this.seeThrough = seeThrough;
         this.boxShape = ShapeGenerator.generateBoxFace().
-                aabb(minPos.getCenter().subtract(0.5,0.5,0.5), maxPos.getCenter().add(0.5,0.5,0.5))
+                aabb(Vec3.atCenterOf(minPos).subtract(0.5,0.5,0.5), Vec3.atCenterOf(maxPos).add(0.5,0.5,0.5))
                 .color(color)
                 .transform(this::updateBox)
                 .seeThrough(true)
                 .build(Shape.RenderingType.BATCH);
         this.boxFrame = ShapeGenerator.generateBoxWireframe().
-                aabb(minPos.getCenter().subtract(0.5,0.5,0.5), maxPos.getCenter().add(0.5,0.5,0.5))
+                aabb(Vec3.atCenterOf(minPos).subtract(0.5,0.5,0.5), Vec3.atCenterOf(maxPos).add(0.5,0.5,0.5))
                 .color(new Color(color.getRed(),color.getGreen(),color.getBlue(),255))
                 .edgeWidth(3f)
                 .transform(this::updateBox)
@@ -73,7 +74,7 @@ public class AreaBox{
         if(shape.getCustomData("color",null) == null){
             shape.putCustomData("color", this.color);
         }
-        if(WandActionsManager.pointingPos != null && isInsideArea(WandActionsManager.pointingPos.getCenter(),this,false)){
+        if(WandActionsManager.pointingPos != null && isInsideArea(Vec3.atCenterOf(WandActionsManager.pointingPos),this,false)){
             shape.setBaseColor(HotkeyCallbacks.deleteArea.isDown()?DELETE_COLOR:DEFAULT_COLOR);
         }else{
             shape.setBaseColor(shape.getCustomData("color",DEFAULT_COLOR));
@@ -88,8 +89,8 @@ public class AreaBox{
         }
     }
     public void submit(){
-        ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"area_box_"+minPos.hashCode()+maxPos.hashCode()),this.boxShape);
-        ShapeManagers.addShape(ResourceLocation.fromNamespaceAndPath(MOD_ID,"area_box_frame_"+minPos.hashCode()+maxPos.hashCode()),this.boxFrame);
+        ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"area_box_"+minPos.hashCode()+maxPos.hashCode()),this.boxShape);
+        ShapeManagers.addShape(Identifier.fromNamespaceAndPath(MOD_ID,"area_box_frame_"+minPos.hashCode()+maxPos.hashCode()),this.boxFrame);
     }
     public void destroy() {
         if (boxShape != null) {

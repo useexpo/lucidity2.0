@@ -8,11 +8,13 @@ import ml.mypals.lucidity.config.SelectiveRenderingConfigs;
 import ml.mypals.lucidity.features.selectiveRendering.ControllableTransparentBuffersWrapper;
 import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingManager;
 import ml.mypals.lucidity.features.selectiveRendering.SelectiveRenderingSubmitNodeStorage;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <1.21.9 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 //? if >=1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 //?}
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -25,12 +27,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
+    //? if >=26.1 {
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
+    private void onShouldRender(Entity entity, Frustum frustum, double d, double e, double f, float g, CallbackInfoReturnable<Boolean> cir)
+    {
+        if (!SelectiveRenderingManager.shouldRenderEntity(entity.getType(),entity.position()) && SelectiveRenderingConfigs.isBlockFullyHidden())
+            cir.setReturnValue(false);
+    }
+    //?} else {
+    /*@Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private void onShouldRender(Entity entity, Frustum frustum, double d, double e, double f, CallbackInfoReturnable<Boolean> cir)
     {
         if (!SelectiveRenderingManager.shouldRenderEntity(entity.getType(),entity.position()) && SelectiveRenderingConfigs.isBlockFullyHidden())
             cir.setReturnValue(false);
     }
+    *///?}
     //? if >=1.21.9 {
 
     @WrapMethod(method = "submit")

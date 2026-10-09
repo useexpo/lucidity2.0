@@ -26,7 +26,7 @@ public abstract class SculkSensorBlockMixin extends BaseEntityBlock implements S
         return !level.isClientSide()?original.call(level,blockState,blockEntityType):
             createTickerHelper(
                 blockEntityType, //Custom ticker if its client-side
-                BlockEntityType.SCULK_SENSOR,
+                net.minecraft.world.level.block.entity.BlockEntityTypes.SCULK_SENSOR,
                 (levelx, blockPos, blockStatex, sculkSensorBlockEntity) ->
                 {
                     ISculkSensorBlockEntity sculkSensorBlock = (ISculkSensorBlockEntity) sculkSensorBlockEntity;

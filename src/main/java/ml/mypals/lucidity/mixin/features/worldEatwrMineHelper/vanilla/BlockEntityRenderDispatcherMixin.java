@@ -1,6 +1,7 @@
 package ml.mypals.lucidity.mixin.features.worldEatwrMineHelper.vanilla;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+//? if <26.1 {
+/*import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -43,3 +44,12 @@ public class BlockEntityRenderDispatcherMixin {
 
     }
 }
+*///?} else {
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+
+@Mixin(Minecraft.class)
+public class BlockEntityRenderDispatcherMixin {
+}
+//?}
+
